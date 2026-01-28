@@ -1,3 +1,4 @@
+//the things i will send to api
 class TopHeadlinesBody {
   final String country;
   final String? category;

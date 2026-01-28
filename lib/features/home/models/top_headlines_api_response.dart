@@ -1,4 +1,4 @@
-
+// the things i will get from api
 class TopHeadlinesApiResponse {
   final String status;
   final int totalResults;
@@ -24,7 +24,7 @@ class TopHeadlinesApiResponse {
       totalResults: map['totalResults'] as int,
       articles: map['articles'] != null
           ? List<Article>.from(
-              (map['articles'] as List<int>).map<Article?>(
+              (map['articles'] as List).map<Article?>(
                 (x) => Article.fromMap(x as Map<String, dynamic>),
               ),
             )

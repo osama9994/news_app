@@ -10,7 +10,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getTopHeadLines() async {
     emit(TopHeadlinesLoading());
     try {
-      final body = TopHeadlinesBody(
+      const body = TopHeadlinesBody(
         category: "business",
         page: 1,
         pageSize: 7);
@@ -20,4 +20,20 @@ class HomeCubit extends Cubit<HomeState> {
       emit(TopHeadlinesError(e.toString()));
     }
   }
+Future<void>getRecommendationItems()async{
+  emit(RecommendedNewsLoading());
+  try{
+     const body = TopHeadlinesBody(
+        category: "business",
+        page: 1,
+        pageSize: 15);
+    final result=await homeServices.getHeadLines(body);
+
+    emit(RecommendedNewsLoaded(result.articles));
+  }
+  catch(e){
+    emit(RecommendedNewsError(e.toString()));
+  }
+}
+
 }

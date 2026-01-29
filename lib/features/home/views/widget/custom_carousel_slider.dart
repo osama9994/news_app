@@ -29,11 +29,35 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
         child: Stack(
           children: <Widget>[
             CachedNetworkImage(
-              imageUrl: article.urlToImage ?? "",
+              imageUrl:
+                  (article.urlToImage != null && article.urlToImage!.isNotEmpty)
+                  ? article.urlToImage!
+                  : "",
               fit: BoxFit.cover,
               width: 1000.0,
               height: 280,
+
+              placeholder: (context, url) => Image.asset(
+                'assets/images/placeholder.png',
+                fit: BoxFit.cover,
+                width: 1000.0,
+                height: 280,
+              ),
+
+              errorWidget: (context, url, error) => Image.asset(
+                'assets/images/placeholder.png',
+                fit: BoxFit.cover,
+                width: 1000.0,
+                height: 280,
+              ),
             ),
+
+            // CachedNetworkImage(
+            //   imageUrl: article.urlToImage ?? "",
+            //   fit: BoxFit.cover,
+            //   width: 1000.0,
+            //   height: 280,
+            // ),
             Positioned(
               bottom: 0.0,
               left: 0.0,
@@ -108,14 +132,17 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                 margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
                 decoration: BoxDecoration(
                   borderRadius: _current == entry.key
-                      ? const BorderRadius.all(Radius.circular(4))
+                      ? const BorderRadius.all(Radius.circular(8))
                       : null,
                   shape: _current == entry.key
                       ? BoxShape.rectangle
                       : BoxShape.circle,
-                  color:_current == entry.key ? AppColors.primary
+                  color: _current == entry.key
+                      ? AppColors.primary
+                        // ignore: deprecated_member_use
+                        .withOpacity(0.9)
                       // ignore: deprecated_member_use
-                      .withOpacity( 0.9):AppColors.black.withOpacity(0.2),
+                      : AppColors.black.withOpacity(0.2),
                 ),
               ),
             );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
 import 'package:news_app/features/home/home_cubit/home_cubit.dart';
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -30,19 +31,29 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: AppBarButton(onTap: (){
-             _scaffoldKey.currentState!.openDrawer();
-            }, iconData: Icons.menu,)
+            child: AppBarButton(
+              onTap: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+              iconData: Icons.menu,
+            ),
           ),
           actions: [
-            AppBarButton(onTap: (){}, iconData: Icons.search,hasPaddingBewteen: true,),
-            const SizedBox(width: 12 ,),
-            AppBarButton(onTap: (){}, iconData: Icons.notifications_none_rounded,hasPaddingBewteen: true,),
-          const SizedBox(width: 12 ,),
+            AppBarButton(
+              onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+              iconData: Icons.search,
+              hasPaddingBewteen: true,
+            ),
+            const SizedBox(width: 12),
+            AppBarButton(
+              onTap: () {},
+              iconData: Icons.notifications_none_rounded,
+              hasPaddingBewteen: true,
+            ),
+            const SizedBox(width: 12),
           ],
-          
         ),
-        drawer: AppDrawer() ,
+        drawer: AppDrawer(),
         body: SafeArea(
           child: Builder(
             builder: (context) {

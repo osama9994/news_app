@@ -1,10 +1,10 @@
 // the things i will get from api
-class TopHeadlinesApiResponse {
+class NewApiResponse {
   final String status;
   final int totalResults;
   final List<Article>? articles;
 
-  const TopHeadlinesApiResponse({
+  const NewApiResponse({
     required this.status,
     required this.totalResults,
     this.articles,
@@ -18,8 +18,8 @@ class TopHeadlinesApiResponse {
     };
   }
 
-  factory TopHeadlinesApiResponse.fromMap(Map<String, dynamic> map) {
-    return TopHeadlinesApiResponse(
+  factory NewApiResponse.fromMap(Map<String, dynamic> map) {
+    return NewApiResponse(
       status: map['status'] as String,
       totalResults: map['totalResults'] as int,
       articles: map['articles'] != null

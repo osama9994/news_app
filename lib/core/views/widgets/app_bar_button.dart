@@ -15,7 +15,7 @@ class AppBarButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.grey
+                  color: AppColors.grey2
                 ),
                 child: Padding(
                   padding:  EdgeInsets.all(hasPaddingBewteen? 8.0: 0.0),

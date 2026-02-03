@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:news_app/core/utils/app_constants.dart';
-import 'package:news_app/features/home/models/top_headlines_api_response.dart';
+import 'package:news_app/core/models/new_api_response.dart';
 import 'package:news_app/features/home/models/top_headlines_body.dart';
 
 class HomeServices {
   final aDio=Dio();
-  Future<TopHeadlinesApiResponse>getHeadLines(TopHeadlinesBody body)async{
+  Future<NewApiResponse>getHeadLines(TopHeadlinesBody body)async{
  try{
   aDio.options.baseUrl=AppConstants.baseUrl;
   final headers={
@@ -19,7 +19,7 @@ final response= await aDio.get(
   ),
   );
 if(response.statusCode==200){
-  return TopHeadlinesApiResponse.fromMap(response.data);
+  return NewApiResponse.fromMap(response.data);
 }else{
 throw Exception(response.statusMessage);
 }

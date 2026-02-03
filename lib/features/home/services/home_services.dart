@@ -19,7 +19,7 @@ final response= await aDio.get(
   ),
   );
 if(response.statusCode==200){
-  return NewApiResponse.fromMap(response.data);
+  return NewApiResponse.fromJson(response.data);
 }else{
 throw Exception(response.statusMessage);
 }

@@ -13,7 +13,7 @@ class SearchBody {
       });
 
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'q': q,
       'searchIn': searchIn,
@@ -22,7 +22,7 @@ class SearchBody {
     };
   }
 
-  factory SearchBody.fromMap(Map<String, dynamic> map) {
+  factory SearchBody.fromJson(Map<String, dynamic> map) {
     return SearchBody(
       q: map['q'] as String,
       searchIn: map['searchIn'] as String,

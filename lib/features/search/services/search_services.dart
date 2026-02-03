@@ -11,11 +11,11 @@ class SearchServices {
       final headers = {"Authorization": "Bearer ${AppConstants.apiKey}"};
       final response = await aDio.get(
         AppConstants.everything,
-        queryParameters: body.toMap(),
+        queryParameters: body.toJson(),
         options: Options(headers: headers),
       );
       if (response.statusCode == 200) {
-        return NewApiResponse.fromMap(response.data);
+        return NewApiResponse.fromJson(response.data);
       } else {
         throw Exception(response.statusMessage);
       }

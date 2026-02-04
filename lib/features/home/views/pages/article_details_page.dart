@@ -62,15 +62,24 @@ class ArticleDetailsPage extends StatelessWidget {
                      hasPaddingBewteen: true,
                      ),
                      const SizedBox(width: 8,),
-                     Row(
-                      children: [
-                        AppBarButton(
-                          onTap: (){}, 
-                          iconData: Icons.share,
-                          hasPaddingBewteen: true,
-                          ),
-              
-                      ],
+                     Padding(
+                       padding: const EdgeInsets.only(right: 12),
+                       child: Row(
+                        children: [
+                          AppBarButton(
+                            onTap: (){}, 
+                            iconData: Icons.share,
+                            hasPaddingBewteen: true,
+                            ),
+                            const SizedBox(width: 12,),
+                          AppBarButton(
+                            onTap: (){}, 
+                            iconData: Icons.favorite_border_outlined,
+                            hasPaddingBewteen: true,
+                            ),
+                                     
+                        ],
+                       ),
                      ),
                 ],
               ),

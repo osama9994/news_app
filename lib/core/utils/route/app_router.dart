@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/models/new_api_response.dart';
+import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
 import 'package:news_app/features/home/views/pages/home_page.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
@@ -33,6 +34,13 @@ class AppRouter {
           ),
           settings: settings,
         );
+        //
+      case AppRoutes.favorites:
+        return CupertinoPageRoute(
+          builder: (_) => FavoritesPage(),
+          settings: settings,
+        );
+        //
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

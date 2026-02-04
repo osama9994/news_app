@@ -23,31 +23,46 @@ class ArticleWidgetItem extends StatelessWidget {
            onTap:() => Navigator.pushNamed(context,AppRoutes.articleDetails ,arguments: article),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: CachedNetworkImage(
-                  imageUrl: article.urlToImage ?? "",
-                  width: isSmaller?140:170,
-                  height:isSmaller?150: 170,
-                  fit: BoxFit.cover,
-          
-                  placeholder: (context, url) => Image.asset(
-                    'assets/images/placeholder.png',
-                    fit: BoxFit.cover,
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: CachedNetworkImage(
+                      imageUrl: article.urlToImage ?? "",
+                      width: isSmaller?140:170,
+                      height:isSmaller?150: 170,
+                      fit: BoxFit.cover,
+                            
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.cover,
+                      ),
+                            
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                            
+                  
                   ),
-          
-                  errorWidget: (context, url, error) => Image.asset(
-                    'assets/images/placeholder.png',
-                    fit: BoxFit.cover,
+                  PositionedDirectional(
+                    top: 8,
+                    end: 8,
+                    child: InkWell(
+                      onTap: (){},
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Icon(Icons.favorite_border_outlined),
+                        ),
+                        ),
+                    ),
                   ),
-                ),
-          
-                // CachedNetworkImage(
-                //   imageUrl: article.urlToImage??"https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png",
-                //   width: 160,
-                //   height: 170,
-                //   fit: BoxFit.cover,
-                //   ),
+                ],
               ),
               const SizedBox(width: 16),
               Expanded(

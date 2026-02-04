@@ -7,4 +7,6 @@ class AppConstants {
   static const String topHeadLines="/v2/top-headlines";
   static const String everything="/v2/everything";
 
+  //shared preferenced
+static const String favoritesKey="favorites";
 }

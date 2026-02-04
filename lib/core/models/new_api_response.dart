@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 // the things i will get from api
 class NewApiResponse {
   final String status;
@@ -42,6 +45,7 @@ class Article {
   final String? urlToImage;
   final String? publishedAt;
   final String? content;
+  final bool isFavorite;
 
  const Article({
      this.source,
@@ -52,6 +56,7 @@ class Article {
      this.urlToImage,
      this.publishedAt,
      this.content,
+     this.isFavorite=false,
   });
 
   Map<String, dynamic> toMap() {
@@ -81,6 +86,34 @@ class Article {
   }
 
  
+
+  String toJson() => json.encode(toMap());
+
+  factory Article.fromJson(String source) => Article.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Article copyWith({
+    Source? source,
+    String? auther,
+    String? title,
+    String? description,
+    String? url,
+    String? urlToImage,
+    String? publishedAt,
+    String? content,
+    bool? isFavorite,
+  }) {
+    return Article(
+      source: source ?? this.source,
+      auther: auther ?? this.auther,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      url: url ?? this.url,
+      urlToImage: urlToImage ?? this.urlToImage,
+      publishedAt: publishedAt ?? this.publishedAt,
+      content: content ?? this.content,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 }
 
 class Source {

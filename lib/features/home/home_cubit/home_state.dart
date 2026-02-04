@@ -28,3 +28,25 @@ final class RecommendedNewsError extends HomeState {
   final String message;
   RecommendedNewsError(this.message);
 }
+ //Favorites
+final class FavoriteLoading extends HomeState {
+   final String title;
+
+  FavoriteLoading(this.title);
+}
+final class FavoriteAdded extends HomeState {
+  final String title;
+
+  FavoriteAdded( this.title);
+  
+}
+final class FavoriteRemoved extends HomeState {
+  final String title;
+
+  FavoriteRemoved(this.title);
+}
+final class FavoriteError extends HomeState {
+  final String message;
+   final String title;
+  FavoriteError(this.message,  this.title);
+}

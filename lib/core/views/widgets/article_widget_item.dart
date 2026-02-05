@@ -2,23 +2,25 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/models/new_api_response.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
-import 'package:news_app/features/home/home_cubit/home_cubit.dart';
 
 class ArticleWidgetItem extends StatelessWidget {
   final Article article;
   final bool isSmaller;
+  final bool isFavorite;
   const ArticleWidgetItem({
     super.key,
     required this.article,
     this.isSmaller = false,
+    this.isFavorite=false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final homeCubit = BlocProvider.of<HomeCubit>(context);
+    final favoriteActionsCubit = BlocProvider.of<FavoriteActionsCubit>(context);
     final parsedDate = DateTime.parse(
       article.publishedAt ?? DateTime.now().toIso8601String(),
     );
@@ -57,40 +59,53 @@ class ArticleWidgetItem extends StatelessWidget {
               PositionedDirectional(
                 top: 8,
                 end: 8,
-                child: BlocBuilder<HomeCubit, HomeState>(
-                  bloc: homeCubit,
+                child: BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
+                  bloc: favoriteActionsCubit,
                   buildWhen: (previous, current) =>
-                      (current is FavoriteAdded && current.title==article.title) ||
-                      (current is FavoriteLoading  && current.title==article.title )  ||
-                      (current is FavoriteRemoved && current.title==article.title )||
-                      (current is FavoriteError  && current.title==article.title) ,
+                      (current is FavoriteAdded &&
+                          current.title == article.title) ||
+                      (current is DoingFavoriteError &&
+                          current.title == article.title) ||
+                      (current is FavoriteRemoved &&
+                          current.title == article.title) ||
+                      (current is DoingFavoriteLoading &&
+                          current.title == article.title),
                   builder: (context, state) {
-                    if(state is FavoriteLoading){
-                      return Center(child: CircularProgressIndicator.adaptive(),);
-
-                    }
-                    else if(state is FavoriteAdded||state is FavoriteRemoved ){
-                        return InkWell(
-                      onTap: ()async =>await homeCubit.setFavorite(article),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(shape: BoxShape.circle),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Icon(
-                            state is FavoriteAdded ? Icons.favorite_rounded : Icons.favorite_border_outlined),
+                    if (state is DoingFavoriteLoading) {
+                      return Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (state is FavoriteAdded ||
+                        state is FavoriteRemoved && !isFavorite) {
+                      return InkWell(
+                        onTap: () async =>
+                            await favoriteActionsCubit.setFavorite(article),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Icon(
+                              state is FavoriteAdded
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_outlined,
+                            ),
+                          ),
                         ),
-                      ),
-                    );
+                      );
                     }
-                 
+
                     return InkWell(
-                      onTap: ()async =>await homeCubit.setFavorite(article),
+                      onTap: () async =>
+                          await favoriteActionsCubit.setFavorite(article),
                       child: DecoratedBox(
                         decoration: BoxDecoration(shape: BoxShape.circle),
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Icon(
-                            article.isFavorite ? Icons.favorite_rounded : Icons.favorite_border_outlined),
+                            article.isFavorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_outlined,
+                          ),
                         ),
                       ),
                     );

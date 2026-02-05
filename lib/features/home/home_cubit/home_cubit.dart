@@ -49,30 +49,7 @@ Future<void>getRecommendationItems()async{
   }
 }
 
-Future<void>setFavorite(Article article)async{
-  emit(FavoriteLoading(article.title??""));
-  try{
-  final favArticles=await _getFavorites();
-  final isFound=favArticles.any((element)=>element.title==article.title);
-  if(isFound){
-  final index=favArticles.indexWhere((element)=>element.title==article.title);
-  favArticles.remove(favArticles[index]);
-  await localDatabaseServices.setStringList(AppConstants.favoritesKey, favArticles.map((e)=>e.toJson()).toList());
-  emit(FavoriteRemoved(article.title??""));
-  
-  }
-  else{
-    favArticles.add(article);
-    await localDatabaseServices.setStringList(AppConstants.favoritesKey, favArticles.map((e)=>e.toJson()).toList() );
-    emit(FavoriteAdded(article.title??""));
-  }
-  }
 
-  catch(e){
-    emit(FavoriteError(e.toString(), article.title??""));
-  }
-
-}
 
 Future<List<Article>>_getFavorites()async{
   
@@ -89,13 +66,3 @@ return favArticles;
 }
 
 }
-
-
-// if(favorites!=null){
-//  favorites.add(article.toJson());
-// }else{
-//   final List<String>newFavorites=[];
-//   newFavorites.add(article.toJson());
-//    await localDatabaseServices.setStringList(AppConstants.favoritesKey, newFavorites);
-
-// }

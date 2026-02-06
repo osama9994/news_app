@@ -9,4 +9,6 @@ class AppConstants {
 
   //shared preferenced
 static const String favoritesKey="favorites";
+//Hive
+static const String localDatabaseBox="local_database";
 }

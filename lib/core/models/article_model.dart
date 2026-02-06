@@ -1,53 +1,30 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'package:hive/hive.dart';
 
-// the things i will get from api
-class NewApiResponse {
-  final String status;
-  final int totalResults;
-  final List<Article>? articles;
+part 'article_model.g.dart';
 
-  const NewApiResponse({
-    required this.status,
-    required this.totalResults,
-    this.articles,
-  });
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'status': status,
-      'totalResults': totalResults,
-      'articles': articles!.map((x) => x.toMap()).toList(),
-    };
-  }
-
-  factory NewApiResponse.fromJson(Map<String, dynamic> map) {
-    return NewApiResponse(
-      status: map['status'] as String,
-      totalResults: map['totalResults'] as int,
-      articles: map['articles'] != null
-          ? List<Article>.from(
-              (map['articles'] as List).map<Article?>(
-                (x) => Article.fromMap(x as Map<String, dynamic>),
-              ),
-            )
-          : null,
-    );
-  }
-}
-
-class Article {
+@HiveType(typeId:0)
+class Article  extends HiveObject{
+  @HiveField(0)
   final Source? source;
+  @HiveField(1)
   final String? auther;
+  @HiveField(2)
   final String? title;
+  @HiveField(3)
   final String? description;
+  @HiveField(4)
   final String? url;
+  @HiveField(5)
   final String? urlToImage;
+  @HiveField(6)
   final String? publishedAt;
+  @HiveField(7)
   final String? content;
+  @HiveField(8)
   final bool isFavorite;
 
- const Article({
+  Article({
      this.source,
      this.auther,
      this.title,
@@ -116,11 +93,14 @@ class Article {
   }
 }
 
-class Source {
+@HiveType(typeId: 1) 
+class Source extends HiveObject {
+  @HiveField(0)
   final String? id;
+  @HiveField(1)
   final String? name;
 
- const Source({
+  Source({
    this.id,
    this.name
    });

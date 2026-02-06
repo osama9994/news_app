@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:news_app/core/models/new_api_response.dart';
+
+import 'package:news_app/core/models/news_api_response.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 import 'package:news_app/features/search/models/search_body.dart';
 
 class SearchServices {
   final aDio = Dio();
-  Future<NewApiResponse> search(SearchBody body) async {
+  Future<NewsApiResponse> search(SearchBody body) async {
     try {
       aDio.options.baseUrl = AppConstants.baseUrl;
       final headers = {"Authorization": "Bearer ${AppConstants.apiKey}"};
@@ -15,7 +16,7 @@ class SearchServices {
         options: Options(headers: headers),
       );
       if (response.statusCode == 200) {
-        return NewApiResponse.fromJson(response.data);
+        return NewsApiResponse.fromJson(response.data);
       } else {
         throw Exception(response.statusMessage);
       }

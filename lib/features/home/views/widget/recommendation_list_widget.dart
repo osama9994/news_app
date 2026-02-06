@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:news_app/core/models/new_api_response.dart';
+import 'package:news_app/core/models/article_model.dart';
+
 import 'package:news_app/core/views/widgets/article_widget_item.dart';
 
 class RecommendationListWidget extends StatelessWidget {

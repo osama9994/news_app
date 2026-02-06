@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/core/models/new_api_response.dart';
-import 'package:news_app/core/services/local_database_services.dart';
+import 'package:news_app/core/models/article_model.dart';
+import 'package:news_app/core/services/local_database_hive.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 import 'package:news_app/features/home/models/top_headlines_body.dart';
 import 'package:news_app/features/home/services/home_services.dart';
@@ -9,7 +9,8 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
   final homeServices = HomeServices();
-  final localDatabaseServices=LocalDatabaseServices();
+  // final localDatabaseServices=LocalDatabaseServices();
+    final localDatabaseHive = LocalDatabaseHive();
   Future<void> getTopHeadLines() async {
     emit(TopHeadlinesLoading());
     try {
@@ -53,16 +54,22 @@ Future<void>getRecommendationItems()async{
 
 Future<List<Article>>_getFavorites()async{
   
-  final favorites=await localDatabaseServices.getStringList(AppConstants.favoritesKey);
-final List<Article>favArticles=[];
-if(favorites!=null){
-  for (var favArticleString in favorites) {
-    final favArticle = Article.fromJson(favArticleString);
-    favArticles.add(favArticle);
-  }
+    final favorites =  await localDatabaseHive.getData<List<dynamic>?>(
+  AppConstants.favoritesKey
+ );
+ if(favorites==null){
+  return[];
+ }
 
-}
-return favArticles;
+// final List<Article>favArticles=[];
+// if(favorites!=null){
+//   for (var favArticleString in favorites) {
+//     final favArticle = Article.fromJson(favArticleString);
+//     favArticles.add(favArticle);
+//   }
+
+// }
+return favorites.map((e) => e as Article).toList();
 }
 
 }

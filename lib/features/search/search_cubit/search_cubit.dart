@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/core/models/new_api_response.dart';
+import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 import 'package:news_app/features/search/models/search_body.dart';
 import 'package:news_app/features/search/services/search_services.dart';

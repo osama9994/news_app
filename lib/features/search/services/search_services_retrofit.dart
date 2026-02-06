@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:news_app/core/models/new_api_response.dart';
+import 'package:news_app/core/models/news_api_response.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 
 import 'package:retrofit/retrofit.dart';
@@ -11,7 +11,7 @@ abstract class SearchServicesRetrofit {
   factory SearchServicesRetrofit(Dio dio, {String? baseUrl}) =
       _SearchServicesRetrofit;
   @GET(AppConstants.everything)
-  Future<NewApiResponse> search(
+  Future<NewsApiResponse> search(
     @Query('q') String q,
     @Query('page') int page,
     @Query('pageSize') int pageSize,

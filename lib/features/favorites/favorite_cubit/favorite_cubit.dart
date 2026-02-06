@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
-import 'package:news_app/core/models/new_api_response.dart';
+import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/features/favorites/services/favorites_services.dart';
 
 
@@ -19,7 +19,7 @@ final favoriteActionsCubit=FavoriteActionsCubit();
   Future<void>getFavoriteItmes()async{
     emit(FavoriteLoading());
     try{
-      final favArtciles=await favoritesServices.getFavorites();
+      final favArtciles=await favoritesServices.getFavoriteHive();
       for(int index=0;index<favArtciles.length;index++ ){
         var article=favArtciles[index];
         article=article.copyWith(isFavorite: true);

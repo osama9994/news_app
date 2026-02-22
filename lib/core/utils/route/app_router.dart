@@ -7,40 +7,54 @@ import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
 import 'package:news_app/features/home/views/pages/home_page.dart';
+import 'package:news_app/features/login/views/pages/login_page.dart';
+import 'package:news_app/features/login/views/pages/register_page.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
 import 'package:news_app/features/search/views/pages/search_page.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      //
+
       case AppRoutes.home:
         return CupertinoPageRoute(
           builder: (_) => const HomePage(),
           settings: settings,
         );
-      //
+
+      case AppRoutes.loginRoute:
+        return CupertinoPageRoute(
+          builder: (_) => const LoginPage(),
+          settings: settings,
+        );
+
+      case AppRoutes.registerRoute:
+        return CupertinoPageRoute(
+          builder: (_) => const RegisterPage(),
+          settings: settings,
+        );
+
       case AppRoutes.articleDetails:
         final article = settings.arguments as Article;
         return CupertinoPageRoute(
           builder: (_) => ArticleDetailsPage(article: article),
           settings: settings,
         );
-      //
+
       case AppRoutes.search:
         return CupertinoPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => SearchCubit(),
+            create: (_) => SearchCubit(),
             child: SearchPage(),
           ),
           settings: settings,
         );
-      //
+
       case AppRoutes.favorites:
         return CupertinoPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) {
-              final cubit=FavoriteCubit();
+            create: (_) {
+              final cubit = FavoriteCubit();
               cubit.getFavoriteItmes();
               return cubit;
             },
@@ -48,11 +62,13 @@ class AppRouter {
           ),
           settings: settings,
         );
-      //
+
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(
-            body: Center(child: Text("no route defined for ${settings.name}")),
+            body: Center(
+              child: Text("No route defined for ${settings.name}"),
+            ),
           ),
         );
     }

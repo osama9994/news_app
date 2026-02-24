@@ -59,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(AppRoutes.profileRoute);
               },
             ),
             const Divider(),

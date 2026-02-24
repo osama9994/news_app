@@ -9,6 +9,7 @@ import 'package:news_app/features/home/views/pages/article_details_page.dart';
 import 'package:news_app/features/home/views/pages/home_page.dart';
 import 'package:news_app/features/login/views/pages/login_page.dart';
 import 'package:news_app/features/login/views/pages/register_page.dart';
+import 'package:news_app/features/profile/views/pages/profile_page.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
 import 'package:news_app/features/search/views/pages/search_page.dart';
 
@@ -22,6 +23,11 @@ class AppRouter {
           settings: settings,
         );
 
+      case AppRoutes.profileRoute:
+        return CupertinoPageRoute(
+          builder: (_) => const ProfilePage(),
+          settings: settings,
+        );
       case AppRoutes.loginRoute:
         return CupertinoPageRoute(
           builder: (_) => const LoginPage(),

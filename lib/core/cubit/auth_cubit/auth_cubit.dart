@@ -1,10 +1,10 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/models/user_data.dart';
 import 'package:news_app/core/services/auth_services.dart';
 import 'package:news_app/core/services/firebase_services.dart';
 import 'package:news_app/core/utils/api_pathes.dart';
-
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -148,4 +148,47 @@ class AuthCubit extends Cubit<AuthState> {
       emit(GoogleAuthError(e.toString()));
     }
   }
+
+  // =========================
+  // Change password
+  // =========================
+
+Future<void> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  emit(const ChangePasswordLoading());
+
+  try {
+    final user = _authServices.currentUser(); // استخدم دالتك الحالية لإرجاع المستخدم
+    if (user == null) {
+      emit(const ChangePasswordError("No user logged in."));
+      return;
+    }
+
+    // إعادة التحقق من المستخدم باستخدام كلمة المرور الحالية
+    final cred = EmailAuthProvider.credential(
+      email: user.email!,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(cred);
+
+    // تغيير كلمة المرور
+    await user.updatePassword(newPassword);
+
+    emit(const ChangePasswordSuccess("Password changed successfully."));
+  } on FirebaseAuthException catch (e) {
+    emit(ChangePasswordError(e.message ?? "Failed to change password."));
+  } catch (e) {
+    emit(ChangePasswordError("An unexpected error occurred."));
+  }
 }
+
+
+
+User? currentUser() {
+  return FirebaseAuth.instance.currentUser;
+}
+}
+
+

@@ -43,3 +43,17 @@ final class GoogleAuthError extends AuthState {
 final class GoogleAuthDone extends AuthState{
   const GoogleAuthDone();
 }
+
+final class ChangePasswordLoading extends AuthState {
+  const ChangePasswordLoading();
+}
+
+final class ChangePasswordSuccess extends AuthState {
+  final String message;
+  const ChangePasswordSuccess(this.message);
+}
+
+final class ChangePasswordError extends AuthState {
+  final String message;
+  const ChangePasswordError(this.message);
+}

@@ -35,7 +35,9 @@ class FavoritesPage extends StatelessWidget {
                 itemCount: articles.length,
                 itemBuilder: (_, index) {
                   final article = articles[index];
-                  return ArticleWidgetItem(article: article, isSmaller: true,isFavorite: true,);
+                  return ArticleWidgetItem(article: article, isSmaller: true,
+                  // isFavorite: true,
+                  );
                 },
               ),
             );

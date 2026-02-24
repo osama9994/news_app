@@ -6,24 +6,267 @@ import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.da
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
+// class ArticleWidgetItem extends StatelessWidget {
+//   final Article article;
+//   final bool isSmaller;
+//   final bool isFavorite;
+//   final VoidCallback? onFavoriteTap; // ✅ أضف هذا
+
+//   const ArticleWidgetItem({
+//     super.key,
+//     required this.article,
+//     this.isSmaller = false,
+//     this.isFavorite = false,
+//     this.onFavoriteTap, // ✅ أضف هنا
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final favoriteActionsCubit = BlocProvider.of<FavoriteActionsCubit>(context);
+//     final parsedDate = DateTime.parse(
+//       article.publishedAt ?? DateTime.now().toIso8601String(),
+//     );
+
+//     final formattedDate = DateFormat.yMMMd().format(parsedDate);
+
+//     return InkWell(
+//       onTap: () => Navigator.pushNamed(
+//         context,
+//         AppRoutes.articleDetails,
+//         arguments: article,
+//       ),
+//       child: Row(
+//         children: [
+//           Stack(
+//             children: [
+//               ClipRRect(
+//                 borderRadius: BorderRadius.circular(16),
+//                 child: CachedNetworkImage(
+//                   imageUrl: article.urlToImage ?? "",
+//                   width: isSmaller ? 140 : 170,
+//                   height: isSmaller ? 150 : 170,
+//                   fit: BoxFit.cover,
+//                   placeholder: (context, url) => Image.asset(
+//                     'assets/images/placeholder.png',
+//                     fit: BoxFit.cover,
+//                   ),
+//                   errorWidget: (context, url, error) => Image.asset(
+//                     'assets/images/placeholder.png',
+//                     fit: BoxFit.cover,
+//                   ),
+//                 ),
+//               ),
+//               PositionedDirectional(
+//                 top: 8,
+//                 end: 8,
+//                 child: InkWell(
+//                   onTap: onFavoriteTap ??
+//                       () async => await favoriteActionsCubit.setFavorite(article),
+//                   child: DecoratedBox(
+//                     decoration: const BoxDecoration(shape: BoxShape.circle),
+//                     child: Padding(
+//                       padding: const EdgeInsets.all(4.0),
+//                       child: Icon(
+//                         article.isFavorite
+//                             ? Icons.favorite_rounded
+//                             : Icons.favorite_border_outlined,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   formattedDate,
+//                   style: Theme.of(context).textTheme.labelLarge!
+//                       .copyWith(color: AppColors.grey),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 Text(
+//                   article.title ?? "",
+//                   maxLines: isSmaller ? 2 : 3,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: Theme.of(context)
+//                       .textTheme
+//                       .titleLarge!
+//                       .copyWith(fontWeight: FontWeight.bold),
+//                 ),
+//                 const SizedBox(height: 16),
+//                 Text(
+//                   article.source?.name ?? "",
+//                   style: Theme.of(context).textTheme.labelLarge,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+// class ArticleWidgetItem extends StatelessWidget {
+//   final Article article;
+//   final bool isSmaller;
+//   final bool isFavorite;
+//   const ArticleWidgetItem({
+//     super.key,
+//     required this.article,
+//     this.isSmaller = false,
+//     this.isFavorite=false,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final favoriteActionsCubit = BlocProvider.of<FavoriteActionsCubit>(context);
+//     final parsedDate = DateTime.parse(
+//       article.publishedAt ?? DateTime.now().toIso8601String(),
+//     );
+
+//     final formattedDate = DateFormat.yMMMd().format(parsedDate);
+
+//     return InkWell(
+//       onTap: () => Navigator.pushNamed(
+//         context,
+//         AppRoutes.articleDetails,
+//         arguments: article,
+//       ),
+//       child: Row(
+//         children: [
+//           Stack(
+//             children: [
+//               ClipRRect(
+//                 borderRadius: BorderRadius.circular(16),
+//                 child: CachedNetworkImage(
+//                   imageUrl: article.urlToImage ?? "",
+//                   width: isSmaller ? 140 : 170,
+//                   height: isSmaller ? 150 : 170,
+//                   fit: BoxFit.cover,
+
+//                   placeholder: (context, url) => Image.asset(
+//                     'assets/images/placeholder.png',
+//                     fit: BoxFit.cover,
+//                   ),
+
+//                   errorWidget: (context, url, error) => Image.asset(
+//                     'assets/images/placeholder.png',
+//                     fit: BoxFit.cover,
+//                   ),
+//                 ),
+//               ),
+//               PositionedDirectional(
+//                 top: 8,
+//                 end: 8,
+//                 child: BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
+//                   bloc: favoriteActionsCubit,
+//                   buildWhen: (previous, current) =>
+//                       (current is FavoriteAdded &&
+//                           current.title == article.title) ||
+//                       (current is DoingFavoriteError &&
+//                           current.title == article.title) ||
+//                       (current is FavoriteRemoved &&
+//                           current.title == article.title) ||
+//                       (current is DoingFavoriteLoading &&
+//                           current.title == article.title),
+//                   builder: (context, state) {
+//                     if (state is DoingFavoriteLoading) {
+//                       return Center(
+//                         child: CircularProgressIndicator.adaptive(),
+//                       );
+//                     } else if (state is FavoriteAdded ||
+//                         state is FavoriteRemoved && !isFavorite) {
+//                       return InkWell(
+//                         onTap: () async =>
+//                             await favoriteActionsCubit.setFavorite(article),
+//                         child: DecoratedBox(
+//                           decoration: BoxDecoration(shape: BoxShape.circle),
+//                           child: Padding(
+//                             padding: const EdgeInsets.all(4.0),
+//                             child: Icon(
+//                               state is FavoriteAdded
+//                                   ? Icons.favorite_rounded
+//                                   : Icons.favorite_border_outlined,
+//                             ),
+//                           ),
+//                         ),
+//                       );
+//                     }
+
+//                     return InkWell(
+//                       onTap: () async =>
+//                           await favoriteActionsCubit.setFavorite(article),
+//                       child: DecoratedBox(
+//                         decoration: BoxDecoration(shape: BoxShape.circle),
+//                         child: Padding(
+//                           padding: const EdgeInsets.all(4.0),
+//                           child: Icon(
+//                             article.isFavorite
+//                                 ? Icons.favorite_rounded
+//                                 : Icons.favorite_border_outlined,
+//                           ),
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   formattedDate,
+//                   style: Theme.of(
+//                     context,
+//                   ).textTheme.labelLarge!.copyWith(color: AppColors.grey),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 Text(
+//                   article.title ?? "",
+//                   maxLines: isSmaller ? 2 : 3,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: Theme.of(
+//                     context,
+//                   ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+//                 ),
+//                 const SizedBox(height: 16),
+//                 Text(
+//                   article.source?.name ?? "",
+//                   style: Theme.of(context).textTheme.labelLarge,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class ArticleWidgetItem extends StatelessWidget {
   final Article article;
   final bool isSmaller;
-  final bool isFavorite;
+
   const ArticleWidgetItem({
     super.key,
     required this.article,
     this.isSmaller = false,
-    this.isFavorite=false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final favoriteActionsCubit = BlocProvider.of<FavoriteActionsCubit>(context);
-    final parsedDate = DateTime.parse(
-      article.publishedAt ?? DateTime.now().toIso8601String(),
-    );
+    final parsedDate = DateTime.tryParse(
+          article.publishedAt ?? DateTime.now().toIso8601String(),
+        ) ??
+        DateTime.now();
 
     final formattedDate = DateFormat.yMMMd().format(parsedDate);
 
@@ -37,6 +280,7 @@ class ArticleWidgetItem extends StatelessWidget {
         children: [
           Stack(
             children: [
+              /// 🖼 Article Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: CachedNetworkImage(
@@ -44,68 +288,39 @@ class ArticleWidgetItem extends StatelessWidget {
                   width: isSmaller ? 140 : 170,
                   height: isSmaller ? 150 : 170,
                   fit: BoxFit.cover,
-
                   placeholder: (context, url) => Image.asset(
                     'assets/images/placeholder.png',
                     fit: BoxFit.cover,
                   ),
-
                   errorWidget: (context, url, error) => Image.asset(
                     'assets/images/placeholder.png',
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
+
+              /// ❤️ Favorite Button
               PositionedDirectional(
                 top: 8,
                 end: 8,
                 child: BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
-                  bloc: favoriteActionsCubit,
-                  buildWhen: (previous, current) =>
-                      (current is FavoriteAdded &&
-                          current.title == article.title) ||
-                      (current is DoingFavoriteError &&
-                          current.title == article.title) ||
-                      (current is FavoriteRemoved &&
-                          current.title == article.title) ||
-                      (current is DoingFavoriteLoading &&
-                          current.title == article.title),
                   builder: (context, state) {
-                    if (state is DoingFavoriteLoading) {
-                      return Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    } else if (state is FavoriteAdded ||
-                        state is FavoriteRemoved && !isFavorite) {
-                      return InkWell(
-                        onTap: () async =>
-                            await favoriteActionsCubit.setFavorite(article),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Icon(
-                              state is FavoriteAdded
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_outlined,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
+                    final cubit = context.read<FavoriteActionsCubit>();
+                    final isFav = cubit.isFavorite(article);
 
                     return InkWell(
-                      onTap: () async =>
-                          await favoriteActionsCubit.setFavorite(article),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(shape: BoxShape.circle),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Icon(
-                            article.isFavorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_outlined,
-                          ),
+                      onTap: () => cubit.setFavorite(article),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        padding: const EdgeInsets.all(6),
+                        child: Icon(
+                          isFav
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_outlined,
+                          color: isFav ? Colors.red : Colors.black,
                         ),
                       ),
                     );
@@ -114,25 +329,30 @@ class ArticleWidgetItem extends StatelessWidget {
               ),
             ],
           ),
+
           const SizedBox(width: 16),
+
+          /// 📝 Article Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   formattedDate,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge!.copyWith(color: AppColors.grey),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .copyWith(color: AppColors.grey),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   article.title ?? "",
                   maxLines: isSmaller ? 2 : 3,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 Text(

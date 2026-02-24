@@ -6,28 +6,56 @@ import 'package:news_app/features/favorites/services/favorites_services.dart';
 
 part 'favorite_state.dart';
 
+// class FavoriteCubit extends Cubit<FavoriteState> {
+//   FavoriteCubit() : super(FavoriteInitial()){
+//     favoriteActionsCubit.stream.listen((state){
+//       if(state is FavoriteRemoved){
+//         getFavoriteItmes();
+//       }
+//     });
+//   }
+// final favoritesServices=FavoritesServices();
+// final favoriteActionsCubit=FavoriteActionsCubit();
+//   Future<void>getFavoriteItmes()async{
+//     emit(FavoriteLoading());
+//     try{
+//       final favArtciles=await favoritesServices.getFavoriteHive();
+//       for(int index=0;index<favArtciles.length;index++ ){
+//         var article=favArtciles[index];
+//         article=article.copyWith(isFavorite: true);
+//         favArtciles[index]=article;
+//       }
+
+// emit(FavoriteLoaded(favArtciles));
+//     }catch(e){
+//       emit(FavoriteError(e.toString()));
+//     }
+//   }
+// }
 class FavoriteCubit extends Cubit<FavoriteState> {
-  FavoriteCubit() : super(FavoriteInitial()){
-    favoriteActionsCubit.stream.listen((state){
-      if(state is FavoriteRemoved){
+  final favoritesServices = FavoritesServices();
+  final favoriteActionsCubit = FavoriteActionsCubit();
+
+  FavoriteCubit() : super(FavoriteInitial()) {
+    favoriteActionsCubit.stream.listen((state) {
+      if (state is FavoriteActionsUpdated) {
         getFavoriteItmes();
       }
     });
   }
-final favoritesServices=FavoritesServices();
-final favoriteActionsCubit=FavoriteActionsCubit();
-  Future<void>getFavoriteItmes()async{
-    emit(FavoriteLoading());
-    try{
-      final favArtciles=await favoritesServices.getFavoriteHive();
-      for(int index=0;index<favArtciles.length;index++ ){
-        var article=favArtciles[index];
-        article=article.copyWith(isFavorite: true);
-        favArtciles[index]=article;
-      }
 
-emit(FavoriteLoaded(favArtciles));
-    }catch(e){
+  Future<void> getFavoriteItmes() async {
+    emit(FavoriteLoading());
+
+    try {
+      final favArticles = await favoritesServices.getFavoriteHive();
+
+      final updatedArticles = favArticles
+          .map((article) => article.copyWith(isFavorite: true))
+          .toList();
+
+      emit(FavoriteLoaded(updatedArticles));
+    } catch (e) {
       emit(FavoriteError(e.toString()));
     }
   }

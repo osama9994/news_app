@@ -16,13 +16,25 @@ if(favAritclesRaw==null){
 
   }
 
-  Future<List<Article>>getFavoriteHive()async{
-    final favorites =  await localDatabaseHive.getData<List<Article>?>(
-  AppConstants.favoritesKey
- );
- if(favorites==null){
-  return [];
- }
-    return favorites.map((e) => e ).toList();
+//   Future<List<Article>>getFavoriteHive()async{
+//     final favorites =  await localDatabaseHive.getData<List<Article>?>(
+//   AppConstants.favoritesKey
+//  );
+//  if(favorites==null){
+//   return [];
+//  }
+//     return favorites.map((e) => e ).toList();
   
-}}
+// }
+Future<List<Article>> getFavoriteHive() async {
+  final rawData = await localDatabaseHive.getData(
+    AppConstants.favoritesKey,
+  );
+
+  if (rawData == null || rawData is! List) {
+    return [];
+  }
+
+  return rawData.cast<Article>();
+}
+}

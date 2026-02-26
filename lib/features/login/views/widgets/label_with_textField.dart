@@ -26,7 +26,58 @@ class LabelWithTextField extends StatefulWidget {
   State<LabelWithTextField> createState() => _LabelWithTextFieldState();
 }
 
+// class _LabelWithTextFieldState extends State<LabelWithTextField> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text(
+//           widget.label,
+//           style: Theme.of(context).textTheme.titleMedium!.copyWith(
+//                 fontWeight: FontWeight.w600,
+//               ),
+//         ),
+//         const SizedBox(height: 16),
+//         TextFormField(
+//           controller: widget.controller,
+//           validator: (value) => value == null || value.isEmpty
+//               ? '${widget.label} cannot be empty!'
+//               : null,
+//           obscureText: widget.obsecureText,
+//           decoration: InputDecoration(
+//             prefixIcon: Icon(widget.prefixIcon),
+//             prefixIconColor: AppColors.grey,
+//             suffixIcon: widget.suffixIcon,
+//             suffixIconColor: AppColors.grey,
+//             hintText: widget.hintText,
+//             fillColor: AppColors.grey2,
+//             filled: true,
+//             border: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(16),
+//               borderSide: BorderSide.none,
+//             ),
+//             errorBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(16),
+//               borderSide: const BorderSide(
+//                 color: AppColors.red,
+//               ),
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 class _LabelWithTextFieldState extends State<LabelWithTextField> {
+  late bool _isObscure;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscure = widget.obsecureText;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,11 +95,27 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
           validator: (value) => value == null || value.isEmpty
               ? '${widget.label} cannot be empty!'
               : null,
-          obscureText: widget.obsecureText,
+          obscureText: _isObscure,
           decoration: InputDecoration(
             prefixIcon: Icon(widget.prefixIcon),
             prefixIconColor: AppColors.grey,
-            suffixIcon: widget.suffixIcon,
+
+            // 👇 هنا الحل
+            suffixIcon: widget.obsecureText
+                ? IconButton(
+                    icon: Icon(
+                      _isObscure
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    },
+                  )
+                : widget.suffixIcon,
+
             suffixIconColor: AppColors.grey,
             hintText: widget.hintText,
             fillColor: AppColors.grey2,

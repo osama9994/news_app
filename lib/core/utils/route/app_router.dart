@@ -56,19 +56,26 @@ class AppRouter {
           settings: settings,
         );
 
-      case AppRoutes.favorites:
-        return CupertinoPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) {
-              final cubit = FavoriteCubit();
-              cubit.getFavoriteItmes();
-              return cubit;
-            },
-            child: FavoritesPage(),
-          ),
-          settings: settings,
-        );
-
+      // case AppRoutes.favorites:
+      //   return CupertinoPageRoute(
+      //     builder: (_) => BlocProvider(
+      //       create: (_) {
+      //         final cubit = FavoriteCubit();
+      //         cubit.getFavoriteItmes();
+      //         return cubit;
+      //       },
+      //       child: FavoritesPage(),
+      //     ),
+      //     settings: settings,
+      //   );
+case AppRoutes.favorites:
+  return CupertinoPageRoute(
+    builder: (_) => BlocProvider(
+      create: (_) => FavoriteCubit(), // ✅ سيتم تحديث المفضلات مباشرة من Cubit
+      child: FavoritesPage(),
+    ),
+    settings: settings,
+  );
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

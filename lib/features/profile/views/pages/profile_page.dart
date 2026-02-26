@@ -30,33 +30,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _username = email.length >= 5 ? email.substring(0, 5) : email;
   }
 
-  void _showEditUsernameDialog() {
-    final controller = TextEditingController(text: _username);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Edit Username"),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: "Enter new username"),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-          ElevatedButton(
-            onPressed: () {
-              final newName = controller.text.trim();
-              if (newName.isNotEmpty) {
-                setState(() => _username = newName);
-              }
-              Navigator.pop(context);
-            },
-            child: const Text("Save"),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onImagePicked: (file) => setState(() => _imageFile = file),
                   ),
                   const SizedBox(height: 15),
-                  UsernameWidget(username: _username, onEdit: _showEditUsernameDialog),
+                  UsernameWidget(username: _username,),
                   const SizedBox(height: 5),
                   EmailWidget(email: email),
                   const SizedBox(height: 30),

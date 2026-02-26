@@ -1,12 +1,12 @@
 class UserData {
   final String id;
-  final String username;
+  // final String username;
   final String email;
   final DateTime createdAt;
 
   UserData({
     required this.id,
-    required this.username,
+    // required this.username,
     required this.email,
     required this.createdAt,
   });
@@ -15,7 +15,7 @@ class UserData {
     final result = <String, dynamic>{};
   
     result.addAll({'id': id});
-    result.addAll({'username': username});
+    // result.addAll({'username': username});
     result.addAll({'email': email});
     result.addAll({'createdAt': createdAt});
   
@@ -25,7 +25,7 @@ class UserData {
   factory UserData.fromMap(Map<String, dynamic> map) {
     return UserData(
       id: map['id'] ?? '',
-      username: map['username'] ?? '',
+      // username: map['username'] ?? '',
       email: map['email'] ?? '',
       createdAt: map['createdAt'] ?? '',
     );

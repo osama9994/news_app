@@ -1,5 +1,6 @@
-part of 'favorite_cubit.dart';
 
+
+import 'package:news_app/core/models/article_model.dart';
 
 sealed class FavoriteState {
   const FavoriteState();

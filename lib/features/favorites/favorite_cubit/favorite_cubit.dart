@@ -1,10 +1,62 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
-import 'package:news_app/core/models/article_model.dart';
-import 'package:news_app/features/favorites/services/favorites_services.dart';
+import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+
+import 'favorite_state.dart';
 
 
-part 'favorite_state.dart';
+class FavoriteCubit extends Cubit<FavoriteState> {
+  final favoriteActionsCubit = FavoriteActionsCubit();
+
+  FavoriteCubit() : super(FavoriteInitial()) {
+    favoriteActionsCubit.stream.listen((state) {
+      if (state is FavoriteActionsUpdated) {
+        emit(FavoriteLoaded(
+          state.favorites.map((article) => article.copyWith(isFavorite: true)).toList(),
+        ));
+      }
+    });
+  }
+}
+
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
+// import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+// import 'package:news_app/features/favorites/favorite_cubit/favorite_state.dart';
+
+// import 'package:news_app/features/favorites/services/favorites_services.dart';
+
+
+// class FavoriteCubit extends Cubit<FavoriteState> {
+//   final favoritesServices = FavoritesServices();
+//   final favoriteActionsCubit = FavoriteActionsCubit();
+
+//   FavoriteCubit() : super(FavoriteInitial()) {
+//     // استمع لتغييرات المفضلات لتحديث صفحة المفضلة
+//     favoriteActionsCubit.stream.listen((state) {
+//       if (state is FavoriteActionsUpdated) {
+//         getFavoriteItmes();
+//       }
+//     });
+//   }
+
+//   Future<void> getFavoriteItmes() async {
+//     emit(FavoriteLoading());
+
+//     try {
+//       final favArticles = await favoritesServices.getFavoriteHive();
+//       final updatedArticles = favArticles.map((article) => article.copyWith(isFavorite: true)).toList();
+//       emit(FavoriteLoaded(updatedArticles));
+//     } catch (e) {
+//       emit(FavoriteError(e.toString()));
+//     }
+//   }
+// }
+
+
+
+
+
 
 // class FavoriteCubit extends Cubit<FavoriteState> {
 //   FavoriteCubit() : super(FavoriteInitial()){
@@ -32,31 +84,4 @@ part 'favorite_state.dart';
 //     }
 //   }
 // }
-class FavoriteCubit extends Cubit<FavoriteState> {
-  final favoritesServices = FavoritesServices();
-  final favoriteActionsCubit = FavoriteActionsCubit();
 
-  FavoriteCubit() : super(FavoriteInitial()) {
-    favoriteActionsCubit.stream.listen((state) {
-      if (state is FavoriteActionsUpdated) {
-        getFavoriteItmes();
-      }
-    });
-  }
-
-  Future<void> getFavoriteItmes() async {
-    emit(FavoriteLoading());
-
-    try {
-      final favArticles = await favoritesServices.getFavoriteHive();
-
-      final updatedArticles = favArticles
-          .map((article) => article.copyWith(isFavorite: true))
-          .toList();
-
-      emit(FavoriteLoaded(updatedArticles));
-    } catch (e) {
-      emit(FavoriteError(e.toString()));
-    }
-  }
-}

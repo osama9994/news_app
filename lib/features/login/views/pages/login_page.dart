@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
+import 'package:news_app/features/login/views/pages/forgot_passowrd_page.dart';
 import 'package:news_app/features/login/views/widgets/label_with_textField.dart';
 import 'package:news_app/features/login/views/widgets/main_button.dart';
 import 'package:news_app/features/login/views/widgets/social_media_button.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -62,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
                     controller: passwordController,
                     prefixIcon: Icons.password,
                     hintText: 'Enter you password',
-                   
                     obsecureText: true,
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.visibility),
@@ -73,7 +71,14 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ForgotPasswordPage(),
+                          ),
+                        );
+                      },
                       child: const Text('Forgot Password'),
                     ),
                   ),
@@ -144,8 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                               current is GoogleAuthError,
                           listener: (context, state) {
                             if (state is GoogleAuthDone) {
-                              Navigator.of(context)
-                                  .pushNamed(AppRoutes.home);
+                              Navigator.of(context).pushNamed(AppRoutes.home);
                             } else if (state is GoogleAuthError) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -164,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                 isLoading: true,
                               );
                             }
-                          return SocialMediaBotton(
+                            return SocialMediaBotton(
                               text: "Login with Google",
                               icon: Icons.g_mobiledata,
                               ontap: () async {
@@ -174,7 +178,6 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                         const SizedBox(height: 16),
-                        
                       ],
                     ),
                   ),

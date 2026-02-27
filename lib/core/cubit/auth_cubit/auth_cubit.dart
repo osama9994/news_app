@@ -32,31 +32,34 @@ class AuthCubit extends Cubit<AuthState> {
   // =========================
   // REGISTER
   // =========================
-  Future<void> registerWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    emit(AuthLoading());
+ Future<void> registerWithEmailAndPassword({
+  required String email,
+  required String password,
+}) async {
+  emit(AuthLoading());
 
-    try {
-      final User? user = await _authServices.registerWithEmailAndPassowrd(
-        email,
-        password,
-      );
+  try {
+    final User? user = await _authServices.registerWithEmailAndPassowrd(
+      email,
+      password,
+    );
 
-      if (user == null) {
-        emit(AuthError('Registration failed'));
-        return;
-      }
-
-      await _saveUserData(user, email);
-
-      emit(const AuthDone());
-    } catch (e) {
-      emit(AuthError(e.toString()));
+    if (user == null) {
+      emit(AuthError('Registration failed'));
+      return;
     }
-  }
 
+    // Navigate immediately
+    emit(const AuthDone());
+
+    // Save user data in background (don’t block UI)
+    _saveUserData(user, email).catchError((e) {
+      // Optional: log or handle Firestore error
+    });
+  } catch (e) {
+    emit(AuthError(e.toString()));
+  }
+}
   // =========================
   // LOGIN
   // =========================

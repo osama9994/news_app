@@ -18,7 +18,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-   LocalDatabaseHive.initHive();
+  LocalDatabaseHive.initHive();
 
   runApp(const MyApp());
 }
@@ -33,8 +33,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(),
         ),
+        // BlocProvider<FavoriteActionsCubit>(
+        //   create: (context) => FavoriteActionsCubit(),
+        // ),
         BlocProvider<FavoriteActionsCubit>(
-          create: (context) => FavoriteActionsCubit(),
+          create: (context) => FavoriteActionsCubit()..initFavorites(),
         ),
       ],
       child: MaterialApp(

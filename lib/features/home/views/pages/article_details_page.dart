@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
+import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
@@ -18,7 +21,6 @@ class ArticleDetailsPage extends StatelessWidget {
     final formatedDate = DateFormat.yMMMd().format(parsedDate);
     return Scaffold(
       extendBodyBehindAppBar: true,
-
       body: Stack(
         children: [
           CachedNetworkImage(
@@ -26,10 +28,8 @@ class ArticleDetailsPage extends StatelessWidget {
             width: double.infinity,
             height: size.height * 0.5,
             fit: BoxFit.cover,
-
             placeholder: (context, url) =>
                 Image.asset('assets/images/placeholder.png', fit: BoxFit.cover),
-
             errorWidget: (context, url, error) =>
                 Image.asset('assets/images/placeholder.png', fit: BoxFit.cover),
           ),
@@ -48,8 +48,8 @@ class ArticleDetailsPage extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: size.height*0.06,
-            left:8 ,
+            top: size.height * 0.06,
+            left: 8,
             right: 8,
             child: SizedBox(
               width: size.width,
@@ -57,38 +57,54 @@ class ArticleDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AppBarButton(
-                    onTap: ()=>Navigator.pop(context),
-                     iconData: Icons.arrow_back_outlined,
-                     hasPaddingBewteen: true,
-                     ),
-                     const SizedBox(width: 8,),
-                     Padding(
-                       padding: const EdgeInsets.only(right: 12),
-                       child: Row(
-                        children: [
-                          AppBarButton(
-                            onTap: (){}, 
-                            iconData: Icons.share,
-                            hasPaddingBewteen: true,
-                            ),
-                            const SizedBox(width: 12,),
-                          AppBarButton(
-                            onTap: (){}, 
-                            iconData: Icons.favorite_border_outlined,
-                            hasPaddingBewteen: true,
-                            ),
-                                     
-                        ],
-                       ),
-                     ),
+                    onTap: () => Navigator.pop(context),
+                    iconData: Icons.arrow_back_outlined,
+                    hasPaddingBewteen: true,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Row(
+                      children: [
+                        AppBarButton(
+                          onTap: () {},
+                          iconData: Icons.share,
+                          hasPaddingBewteen: true,
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        // AppBarButton(
+                        //   onTap: (){},
+                        //   iconData: Icons.favorite_border_outlined,
+                        //   hasPaddingBewteen: true,
+                        //   ),
+                        BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
+                          builder: (context, state) {
+                            final cubit = context.read<FavoriteActionsCubit>();
+                            final isFav = cubit.isFavorite(article);
+
+                            return AppBarButton(
+                              onTap: () => cubit.setFavorite(article),
+                              iconData: isFav
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_outlined,
+                              hasPaddingBewteen: true,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            ),
+          ),
           Padding(
             padding: EdgeInsets.only(
               top: size.height * 0.28,
-              
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,28 +123,37 @@ class ArticleDetailsPage extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "General",
-                            style: Theme.of(context).textTheme.bodyLarge!.
-                            copyWith(color: AppColors.white,fontWeight: FontWeight.bold),
-                            
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8,),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       Text(
                         article.title ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         "Trending . $formatedDate",
                         style: Theme.of(
                           context,
-                        ).textTheme.labelLarge!.copyWith(color: AppColors.white),
+                        )
+                            .textTheme
+                            .labelLarge!
+                            .copyWith(color: AppColors.white),
                       ),
                     ],
                   ),
@@ -137,33 +162,49 @@ class ArticleDetailsPage extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    
                     decoration: BoxDecoration(
-                     borderRadius:  BorderRadius.vertical(top: Radius.circular(36)),
-                     color: AppColors.white,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(36)),
+                      color: AppColors.white,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Column(
                         children: [
-                          Row( 
+                          Row(
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: CachedNetworkImageProvider(article.urlToImage??"assets/images/placeholder.png"),
+                                backgroundImage: CachedNetworkImageProvider(
+                                    article.urlToImage ??
+                                        "assets/images/placeholder.png"),
                               ),
                               const SizedBox(width: 8),
-                              Text(article.source?.name??"UNKNOWN",style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w500),),
-                            const SizedBox(height:24,),                         
-                            ],                        
+                              Text(
+                                article.source?.name ?? "UNKNOWN",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(
+                                height: 24,
+                              ),
+                            ],
                           ),
-                             Text((article.description??"")+(article.content??""),
-                             style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.black),),
+                          Text(
+                            (article.description ?? "") +
+                                (article.content ?? ""),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(color: AppColors.black),
+                          ),
                         ],
                       ),
                     ),
-                    ),
                   ),
+                ),
               ],
             ),
           ),

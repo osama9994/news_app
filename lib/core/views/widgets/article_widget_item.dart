@@ -11,11 +11,13 @@ import 'package:news_app/core/utils/theme/app_colors.dart';
 class ArticleWidgetItem extends StatelessWidget {
   final Article article;
   final bool isSmaller;
-
+ final bool isFavorite ;
+  
   const ArticleWidgetItem({
     super.key,
     required this.article,
     this.isSmaller = false,
+    this.isFavorite = false,
   });
 
   @override

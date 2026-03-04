@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_services_retrofit.dart';
+part of 'category_services_retrofit.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'search_services_retrofit.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _SearchServicesRetrofit implements SearchServicesRetrofit {
-  _SearchServicesRetrofit(
+class _CategoryServicesRetrofit implements CategoryServicesRetrofit {
+  _CategoryServicesRetrofit(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -24,22 +24,18 @@ class _SearchServicesRetrofit implements SearchServicesRetrofit {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<NewsApiResponse> search(
-    String q,
-    int page,
-    int pageSize,
-    String searchIn,
+  Future<NewsApiResponse> getCategoryNews(
+    String country,
+    String category,
     String apiKey,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
-      r'q': q,
-      r'page': page,
-      r'pageSize': pageSize,
-      r'searchIn': searchIn,
+      r'country': country,
+      r'category': category,
+      r'apiKey': apiKey,
     };
-    final _headers = <String, dynamic>{r'Authorization': apiKey};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<NewsApiResponse>(Options(
       method: 'GET',
@@ -48,7 +44,7 @@ class _SearchServicesRetrofit implements SearchServicesRetrofit {
     )
         .compose(
           _dio.options,
-          '/v2/everything',
+          '/top-headlines',
           queryParameters: queryParameters,
           data: _data,
         )

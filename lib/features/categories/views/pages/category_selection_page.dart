@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
-import 'package:news_app/features/categories/views/pages/category_news_page.dart';
 import 'package:news_app/features/categories/views/widgets/category_item_button.dart';
 
 class CategorySelectionPage extends StatefulWidget {
@@ -57,13 +56,10 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               title: 'Business',
               icon: Icons.business_center,
               onTap: () {
-                Navigator.push(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => CategoryNewsPage(
-                      category: 'business',
-                    ),
-                  ),
+                  AppRoutes.categoryNews,
+                  arguments: "business",
                 );
               },
             ),
@@ -71,34 +67,43 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               title: 'Entertainment',
               icon: Icons.movie,
               onTap: () {
-                // Handle category selection
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.categoryNews,
+                  arguments: "entertainment",
+                );
               },
             ),
             CategoryItemButton(
               title: 'Health',
               icon: Icons.health_and_safety,
               onTap: () {
-                // Handle category selection
+                 Navigator.pushNamed(
+                  context,
+                  AppRoutes.categoryNews,
+                  arguments: "Health",
+                );
               },
             ),
             CategoryItemButton(
               title: 'Science',
               icon: Icons.science,
               onTap: () {
-                // Handle category selection
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.categoryNews,
+                  arguments: "Science",
+                );
               },
             ),
             CategoryItemButton(
               title: 'Sports',
               icon: Icons.sports_soccer,
               onTap: () {
-                Navigator.push(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => CategoryNewsPage(
-                      category: 'sports',
-                    ),
-                  ),
+                  AppRoutes.categoryNews,
+                  arguments: "Sports",
                 );
               },
             ),
@@ -106,7 +111,11 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               title: 'Technology',
               icon: Icons.computer,
               onTap: () {
-                // Handle category selection
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.categoryNews,
+                  arguments: "Technology",
+                );
               },
             ),
           ],

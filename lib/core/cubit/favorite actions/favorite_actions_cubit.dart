@@ -11,7 +11,16 @@ class FavoriteActionsCubit extends Cubit<FavoriteActionsState> {
   final FavoritesServices favoritesServices = FavoritesServices();
   List<Article> _favorites = [];
 
+  // Expose a copy of the current favorites list (read-only for consumers)
+  List<Article> get favorites => List<Article>.from(_favorites);
+
+  bool _initialized = false;
+
   Future<void> initFavorites() async {
+    // Ensure initialization logic runs only once
+    if (_initialized) return;
+    _initialized = true;
+
     _favorites = await favoritesServices.getFavoriteHive();
     emit(FavoriteActionsUpdated(List<Article>.from(_favorites)));
 

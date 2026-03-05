@@ -11,6 +11,17 @@ import 'package:news_app/core/utils/route/app_router.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_theme.dart';
 
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+
+//   LocalDatabaseHive.initHive();
+
+//   runApp(const MyApp());
+// }
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,11 +29,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  LocalDatabaseHive.initHive();
+  await LocalDatabaseHive.initHive();
 
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

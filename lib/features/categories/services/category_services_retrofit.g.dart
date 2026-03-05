@@ -12,6 +12,7 @@ class _CategoryServicesRetrofit implements CategoryServicesRetrofit {
   _CategoryServicesRetrofit(
     this._dio, {
     this.baseUrl,
+    // ignore: unused_element_parameter
     this.errorLogger,
   }) {
     baseUrl ??= 'https://newsapi.org';
@@ -44,7 +45,8 @@ class _CategoryServicesRetrofit implements CategoryServicesRetrofit {
     )
         .compose(
           _dio.options,
-          '/top-headlines',
+          // Correct endpoint: /v2/top-headlines
+          '/v2/top-headlines',
           queryParameters: queryParameters,
           data: _data,
         )

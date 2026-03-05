@@ -1,15 +1,17 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/category_cubit/category_cubit.dart';
 import 'package:news_app/features/categories/category_cubit/category_state.dart';
+import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
+import 'package:news_app/core/views/widgets/app_drawer.dart';
+import 'package:news_app/core/views/widgets/app_bar_button.dart';
 
 class CategoryNewsPage extends StatelessWidget {
   final String category;
 
-  const CategoryNewsPage({
-    super.key,
-    required this.category,
-  });
+  const CategoryNewsPage({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -18,45 +20,67 @@ class CategoryNewsPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(category.toUpperCase()),
+          leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AppBarButton(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              iconData: Icons.arrow_back,
+            ),
+          ),
+          actions: [
+            AppBarButton(
+              onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+              iconData: Icons.search,
+              hasPaddingBewteen: true,
+            ),
+          ],
         ),
-        body: BlocBuilder<CategoryCubit, CategoryState>(
-          builder: (context, state) {
-            if (state is CategoryLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        drawer: AppDrawer(),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                if (state is CategoryLoading) {
+                  return const Center(
+                      child: CircularProgressIndicator.adaptive());
+                }
 
-            if (state is CategoryLoaded) {
-              final articles = state.articles;
+                if (state is CategoryLoaded) {
+                  final articles = state.articles;
+                  if (articles.isEmpty) {
+                    return const Center(
+                        child: Text("there is no news for this category"));
+                  }
 
-              if (articles.isEmpty) {
-                return const Center(
-                  child: Text("No News Found"),
-                );
-              }
-
-              return ListView.builder(
-                itemCount: articles.length,
-                itemBuilder: (context, index) {
-                  final article = articles[index];
-
-                  return ListTile(
-                    title: Text(article.title ?? ""),
-                    subtitle: Text(article.source?.name ?? ""),
+                  // نستخدم نفس RecommendationListWidget من الـ HomePage
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          "$category News",
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        RecommendationListWidget(articles: articles),
+                      ],
+                    ),
                   );
-                },
-              );
-            }
+                }
 
-            if (state is CategoryError) {
-              return Center(
-                child: Text(state.message),
-              );
-            }
+                if (state is CategoryError) {
+                  return Center(child: Text(state.message));
+                }
 
-            return const SizedBox.shrink();
-          },
+                return const SizedBox();
+              },
+            ),
+          ),
         ),
       ),
     );

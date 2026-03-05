@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/pages/category_selection_page.dart';
+import 'package:news_app/features/categories/views/pages/category_news_page.dart';
 import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
@@ -17,7 +18,6 @@ import 'package:news_app/features/search/views/pages/search_page.dart';
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-
       case AppRoutes.home:
         return CupertinoPageRoute(
           builder: (_) => const HomePage(),
@@ -29,6 +29,7 @@ class AppRouter {
           builder: (_) => const ProfilePage(),
           settings: settings,
         );
+
       case AppRoutes.loginRoute:
         return CupertinoPageRoute(
           builder: (_) => const LoginPage(),
@@ -40,14 +41,37 @@ class AppRouter {
           builder: (_) => const RegisterPage(),
           settings: settings,
         );
-      case AppRoutes.categoryRoute:
+
+      case AppRoutes.category:
         return CupertinoPageRoute(
-          builder: (_) =>  CategorySelectionPage(),
+          builder: (_) => const CategorySelectionPage(),
           settings: settings,
         );
 
+      case AppRoutes.categoryNews:
+        final category = settings.arguments as String?;
+        if (category == null) {
+          return CupertinoPageRoute(
+            builder: (_) => Scaffold(
+              body: Center(child: Text("no category data provided")),
+            ),
+            settings: settings,
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => CategoryNewsPage(category: category),
+        );
+
       case AppRoutes.articleDetails:
-        final article = settings.arguments as Article;
+        final article = settings.arguments as Article?;
+        if (article == null) {
+          return CupertinoPageRoute(
+            builder: (_) => Scaffold(
+              body: Center(child: Text("no article data provided")),
+            ),
+            settings: settings,
+          );
+        }
         return CupertinoPageRoute(
           builder: (_) => ArticleDetailsPage(article: article),
           settings: settings,
@@ -62,26 +86,14 @@ class AppRouter {
           settings: settings,
         );
 
-      // case AppRoutes.favorites:
-      //   return CupertinoPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (_) {
-      //         final cubit = FavoriteCubit();
-      //         cubit.getFavoriteItmes();
-      //         return cubit;
-      //       },
-      //       child: FavoritesPage(),
-      //     ),
-      //     settings: settings,
-      //   );
-case AppRoutes.favorites:
-  return CupertinoPageRoute(
-    builder: (_) => BlocProvider(
-  create: (_) => FavoriteCubit(),
-  child: FavoritesPage(),
-),
-    settings: settings,
-  );
+      case AppRoutes.favorites:
+        return CupertinoPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => FavoriteCubit(),
+            child: FavoritesPage(),
+          ),
+          settings: settings,
+        );
 
       default:
         return CupertinoPageRoute(

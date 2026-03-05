@@ -8,8 +8,17 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   final FavoriteActionsCubit favoriteActionsCubit = FavoriteActionsCubit();
 
   FavoriteCubit() : super(FavoriteLoading()) {
-    // Load initial favorites once this cubit is created
-    favoriteActionsCubit.initFavorites();
+    // If favorites were already initialized globally, sync them immediately
+    final initialFavorites = favoriteActionsCubit.favorites;
+    if (initialFavorites.isNotEmpty) {
+      emit(
+        FavoriteLoaded(
+          initialFavorites
+              .map((article) => article.copyWith(isFavorite: true))
+              .toList(),
+        ),
+      );
+    }
 
     // Listen to any favorites updates (add/remove) and update the UI list
     favoriteActionsCubit.stream.listen((state) {

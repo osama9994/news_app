@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/pages/category_selection_page.dart';
@@ -86,15 +87,16 @@ class AppRouter {
           settings: settings,
         );
 
-      case AppRoutes.favorites:
-        return CupertinoPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => FavoriteCubit(),
-            child: FavoritesPage(),
-          ),
-          settings: settings,
-        );
-
+   case AppRoutes.favorites:
+  return CupertinoPageRoute(
+    builder: (_) => BlocProvider(
+      create: (context) => FavoriteCubit(
+        context.read<FavoriteActionsCubit>(),
+      ),
+      child: const FavoritesPage(),
+    ),
+    settings: settings,
+  );
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

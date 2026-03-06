@@ -6,7 +6,8 @@ class AppBarButton extends StatelessWidget {
   final VoidCallback onTap;
   final IconData iconData;
   final bool hasPaddingBewteen;
-  const AppBarButton({super.key, required this.onTap, required this.iconData,  this.hasPaddingBewteen=false});
+  final Color? color;  
+  const AppBarButton({super.key,this.color, required this.onTap, required this.iconData,  this.hasPaddingBewteen=false});
 
   @override
   Widget build(BuildContext context) {

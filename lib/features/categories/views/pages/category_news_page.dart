@@ -30,10 +30,13 @@ class CategoryNewsPage extends StatelessWidget {
             ),
           ),
           actions: [
-            AppBarButton(
-              onTap: () => Navigator.pushNamed(context, AppRoutes.search),
-              iconData: Icons.search,
-              hasPaddingBewteen: true,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AppBarButton(
+                onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+                iconData: Icons.search,
+                hasPaddingBewteen: true,
+              ),
             ),
           ],
         ),

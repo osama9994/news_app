@@ -4,10 +4,12 @@ import 'package:news_app/core/utils/theme/app_colors.dart';
 class TitleHeadlineWidget extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
+  final bool showViewAll;
   const TitleHeadlineWidget({
     super.key,
     required this.title,
     required this.onTap,
+    this.showViewAll = false,
   });
 
   @override

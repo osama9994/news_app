@@ -20,7 +20,7 @@ class TitleHeadlineWidget extends StatelessWidget {
      ),
      const Spacer(),
      TextButton(
-      onPressed: (){},
+      onPressed: onTap,
       child: Text(
         "View All",
         style:Theme.of(context).textTheme.titleSmall!.copyWith(color: AppColors.primary,fontWeight: FontWeight.w500),

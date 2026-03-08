@@ -9,7 +9,9 @@ import 'package:news_app/features/categories/views/pages/category_news_page.dart
 import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
+import 'package:news_app/features/home/views/pages/breaking_news_all_page.dart';
 import 'package:news_app/features/home/views/pages/home_page.dart';
+import 'package:news_app/features/home/views/pages/recommendation_news_all_page.dart';
 import 'package:news_app/features/login/views/pages/login_page.dart';
 import 'package:news_app/features/login/views/pages/register_page.dart';
 import 'package:news_app/features/profile/views/pages/profile_page.dart';
@@ -87,16 +89,30 @@ class AppRouter {
           settings: settings,
         );
 
-   case AppRoutes.favorites:
-  return CupertinoPageRoute(
-    builder: (_) => BlocProvider(
-      create: (context) => FavoriteCubit(
-        context.read<FavoriteActionsCubit>(),
-      ),
-      child: const FavoritesPage(),
-    ),
-    settings: settings,
-  );
+      case AppRoutes.breakingNews:
+        return CupertinoPageRoute(
+          builder: (_) => const BreakingNewsAllPage(),
+          settings: settings,
+        );
+
+      case AppRoutes.recommendationNews:
+        return CupertinoPageRoute(
+          builder: (_) => const RecommendationNewsAllPage(),
+          settings: settings,
+        );
+
+      case AppRoutes.favorites:
+        return CupertinoPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => FavoriteCubit(
+              context.read<FavoriteActionsCubit>(),
+            ),
+            child: const FavoritesPage(),
+          ),
+          settings: settings,
+        );
+
+
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

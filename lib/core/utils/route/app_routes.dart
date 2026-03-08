@@ -9,4 +9,6 @@ class AppRoutes {
   static const String profileRoute = '/profile';
   static const String category = "/category";
   static const String categoryNews = "/categoryNews";
+    static const String breakingNews = "/breaking-news";
+  static const String recommendationNews = "/recommendation-news";
 }

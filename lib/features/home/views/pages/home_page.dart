@@ -140,10 +140,6 @@
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -218,7 +214,10 @@ class _HomePageState extends State<HomePage> {
                         // ---------------- Breaking News ----------------
                         TitleHeadlineWidget(
                           title: "Breaking News",
-                          onTap: () {},
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.breakingNews,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         SizedBox(
@@ -246,7 +245,10 @@ class _HomePageState extends State<HomePage> {
                         // ---------------- Recommendation ----------------
                         TitleHeadlineWidget(
                           title: "Recommendation",
-                          onTap: () {},
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.recommendationNews,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         BlocBuilder<HomeCubit, HomeState>(

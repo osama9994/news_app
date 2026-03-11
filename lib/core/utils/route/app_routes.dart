@@ -11,4 +11,7 @@ class AppRoutes {
   static const String categoryNews = "/categoryNews";
     static const String breakingNews = "/breaking-news";
   static const String recommendationNews = "/recommendation-news";
+  static const String notifications = "/notifications";
+  // ✅ أضف هذا السطر
+static const String onboarding = "/onboarding";
 }

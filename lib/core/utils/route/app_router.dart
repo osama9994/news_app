@@ -6,6 +6,7 @@ import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/pages/category_selection_page.dart';
 import 'package:news_app/features/categories/views/pages/category_news_page.dart';
+import 'package:news_app/features/categories/views/pages/onboarding_category_page.dart';
 import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
@@ -14,6 +15,7 @@ import 'package:news_app/features/home/views/pages/home_page.dart';
 import 'package:news_app/features/home/views/pages/recommendation_news_all_page.dart';
 import 'package:news_app/features/login/views/pages/login_page.dart';
 import 'package:news_app/features/login/views/pages/register_page.dart';
+import 'package:news_app/features/notifications/views/pages/notifications_page.dart';
 import 'package:news_app/features/profile/views/pages/profile_page.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
 import 'package:news_app/features/search/views/pages/search_page.dart';
@@ -100,7 +102,17 @@ class AppRouter {
           builder: (_) => const RecommendationNewsAllPage(),
           settings: settings,
         );
-
+    
+      case AppRoutes.notifications:
+        return CupertinoPageRoute(
+          builder: (_) => const NotificationsPage(),
+          settings: settings,
+        );
+case AppRoutes.onboarding:
+  return CupertinoPageRoute(
+    builder: (_) => const OnboardingCategoryPage(),
+    settings: settings,
+  );
       case AppRoutes.favorites:
         return CupertinoPageRoute(
           builder: (_) => BlocProvider(

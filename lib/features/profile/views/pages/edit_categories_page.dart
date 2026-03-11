@@ -1,0 +1,327 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/utils/app_constants.dart';
+import 'package:news_app/core/utils/theme/app_colors.dart';
+
+class EditCategoriesPage extends StatefulWidget {
+  const EditCategoriesPage({super.key});
+
+  @override
+  State<EditCategoriesPage> createState() => _EditCategoriesPageState();
+}
+
+class _EditCategoriesPageState extends State<EditCategoriesPage> {
+  List<String> _selected = [];
+
+  final List<Map<String, dynamic>> _categories = [
+    {'id': 'sports',        'label': 'Sports',        'icon': '🏅', 'color': Color(0xFFFF6B6B)},
+    {'id': 'technology',    'label': 'Technology',    'icon': '💻', 'color': Color(0xFF4ECDC4)},
+    {'id': 'politics',      'label': 'Politics',      'icon': '🌍', 'color': Color(0xFF45B7D1)},
+    {'id': 'business',      'label': 'Business',      'icon': '💰', 'color': Color(0xFF96CEB4)},
+    {'id': 'entertainment', 'label': 'Entertainment', 'icon': '🎬', 'color': Color(0xFFFFD93D)},
+    {'id': 'science',       'label': 'Science',       'icon': '🔬', 'color': Color(0xFFDDA0DD)},
+    {'id': 'health',        'label': 'Health',        'icon': '❤️', 'color': Color(0xFFFF8B94)},
+    {'id': 'general',       'label': 'General',       'icon': '📰', 'color': Color(0xFFB5EAD7)},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCategories();
+  }
+
+  // ✅ تحميل الفئات المحفوظة من Hive
+  void _loadSavedCategories() {
+    final box = Hive.box(AppConstants.localDatabaseBox);
+    final saved = box.get('favoriteCategories');
+    if (saved != null && saved is List) {
+      setState(() {
+        _selected = List<String>.from(saved);
+      });
+    }
+  }
+
+  void _toggle(String id) {
+    setState(() {
+      _selected.contains(id) ? _selected.remove(id) : _selected.add(id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Edit Interests',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Update your interests",
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Choose the topics you want to follow.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: AppColors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Grid ──
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GridView.builder(
+                physics: const BouncingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.35,
+                ),
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  final cat = _categories[index];
+                  final isSelected = _selected.contains(cat['id']);
+                  return _CategoryTile(
+                    icon: cat['icon'],
+                    label: cat['label'],
+                    color: cat['color'],
+                    isSelected: isSelected,
+                    onTap: () => _toggle(cat['id']),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // ── Bottom ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            child: Column(
+              children: [
+                // Counter
+                AnimatedOpacity(
+                  opacity: _selected.isNotEmpty ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle_rounded,
+                            size: 16, color: AppColors.primary),
+                        const SizedBox(width: 6),
+                        Text(
+                          "${_selected.length} topic${_selected.length > 1 ? 's' : ''} selected",
+                          style: GoogleFonts.poppins(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Save Button
+                BlocConsumer<AuthCubit, AuthState>(
+                  listenWhen: (_, c) =>
+                      c is CategoriesSaved || c is CategoriesError,
+                  listener: (context, state) {
+                    if (state is CategoriesSaved) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(Icons.check_circle, color: Colors.white),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Interests updated successfully!",
+                                style: GoogleFonts.poppins(),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                      Navigator.pop(context); // ✅ ارجع للـ Profile
+                    } else if (state is CategoriesError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.message)),
+                      );
+                    }
+                  },
+                  buildWhen: (_, c) =>
+                      c is CategoriesSaving ||
+                      c is CategoriesSaved ||
+                      c is CategoriesError,
+                  builder: (context, state) {
+                    final isLoading = state is CategoriesSaving;
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: (_selected.isEmpty || isLoading)
+                            ? null
+                            : () => context
+                                .read<AuthCubit>()
+                                .saveUserCategories(categories: _selected),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          disabledBackgroundColor: AppColors.grey2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Text(
+                                "Save Changes",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Category Tile ──
+class _CategoryTile extends StatelessWidget {
+  final String icon;
+  final String label;
+  final Color color;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryTile({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          // ignore: deprecated_member_use
+          color: isSelected ? color : color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: isSelected ? color : Colors.transparent,
+            width: 2,
+          ),
+          boxShadow: isSelected
+              ? [BoxShadow(
+                  // ignore: deprecated_member_use
+                  color: color.withOpacity(0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 5),
+                )]
+              : [],
+        ),
+        child: Stack(
+          children: [
+            if (isSelected)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.check_rounded, size: 14, color: color),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(icon, style: const TextStyle(fontSize: 26)),
+                  const SizedBox(height: 6),
+                  Text(
+                    label,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

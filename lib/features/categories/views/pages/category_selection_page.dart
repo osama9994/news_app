@@ -42,7 +42,7 @@ class CategorySelectionPage extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           AppBarButton(
-            onTap: () {},
+            onTap: () {Navigator.pushNamed(context, AppRoutes.notifications);},
             iconData: Icons.notifications_none_rounded,
             color: Colors.black,
             hasPaddingBewteen: true,

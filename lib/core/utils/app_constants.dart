@@ -11,4 +11,6 @@ class AppConstants {
 static const String favoritesKey="favorites";
 //Hive
 static const String localDatabaseBox="local_database";
+static const String notificationsKey = "notifications";
+
 }

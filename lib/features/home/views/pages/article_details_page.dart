@@ -147,7 +147,7 @@ class ArticleDetailsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Trending . $formatedDate",
+                        "${article.isBreaking ? 'Breaking' : 'Trending'} . $formatedDate",
                         style: Theme.of(
                           context,
                         )

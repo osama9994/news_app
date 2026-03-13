@@ -13,18 +13,35 @@ class ViewAllNewsCubit extends Cubit<ViewAllNewsState> {
   final _localDatabaseHive = LocalDatabaseHive();
 
   /// Load all breaking news (first 40 articles)
-  Future<void> loadBreakingNews() async {
-    emit(ViewAllNewsLoading());
+Future<void> loadBreakingNews() async {
+  emit(ViewAllNewsLoading());
 
-    try {
-      final result = await _homeServices.getNews(page: 1, pageSize: 40);
-      final articles = result.articles ?? [];
+  try {
+    final result = await _homeServices.getNews(page: 1, pageSize: 40);
+    final articles = result.articles ?? [];
 
-      emit(ViewAllNewsLoaded(articles));
-    } catch (e) {
-      emit(ViewAllNewsError(e.toString()));
-    }
+    // ✅ كل المقالات هنا breaking
+    final breakingArticles = articles
+        .map((a) => a.copyWith(isBreaking: true))
+        .toList();
+
+    emit(ViewAllNewsLoaded(breakingArticles));
+  } catch (e) {
+    emit(ViewAllNewsError(e.toString()));
   }
+}
+  // Future<void> loadBreakingNews() async {
+  //   emit(ViewAllNewsLoading());
+
+  //   try {
+  //     final result = await _homeServices.getNews(page: 1, pageSize: 40);
+  //     final articles = result.articles ?? [];
+
+  //     emit(ViewAllNewsLoaded(articles));
+  //   } catch (e) {
+  //     emit(ViewAllNewsError(e.toString()));
+  //   }
+  // }
 
   /// Load all recommendation news (skip first 7 breaking, take the rest)
   Future<void> loadRecommendationNews() async {

@@ -100,8 +100,12 @@ class HomeCubit extends Cubit<HomeState> {
       final result = await homeServices.getNews(page: 1, pageSize: 25);
       final articles = result.articles ?? [];
 
-      final breakingNews = articles.take(7).toList();
-      final recommendationNews = articles.skip(7).take(15).toList();
+      final breakingNews = articles.take(7)
+    .map((a) => a.copyWith(isBreaking: true))
+    .toList();
+final recommendationNews = articles.skip(7).take(15)
+    .map((a) => a.copyWith(isBreaking: false))
+    .toList();
 
       // إضافة حالة المفضلة للمقالات الموصى بها
       final favArticles = await _getFavorites();

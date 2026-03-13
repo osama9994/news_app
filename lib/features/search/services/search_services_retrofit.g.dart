@@ -12,7 +12,6 @@ class _SearchServicesRetrofit implements SearchServicesRetrofit {
   _SearchServicesRetrofit(
     this._dio, {
     this.baseUrl,
-    // ignore: unused_element_parameter
     this.errorLogger,
   }) {
     baseUrl ??= 'https://newsapi.org';

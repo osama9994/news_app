@@ -62,6 +62,16 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context).pushNamed(AppRoutes.category);
               },
             ),
+
+            const Divider(),
+            ListTile(
+  leading: const Icon(Icons.interests_outlined),
+  title: Text("My Interests",
+      style: Theme.of(context).textTheme.titleMedium),
+  onTap: () {
+    Navigator.of(context).pushNamed(AppRoutes.myInterests);
+  },
+),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.person),

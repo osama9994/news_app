@@ -6,6 +6,7 @@ import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/pages/category_selection_page.dart';
 import 'package:news_app/features/categories/views/pages/category_news_page.dart';
+import 'package:news_app/features/categories/views/pages/my_interests_page.dart' show MyInterestsPage;
 import 'package:news_app/features/categories/views/pages/onboarding_category_page.dart';
 import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/views/pages/favorites_page.dart';
@@ -123,7 +124,11 @@ case AppRoutes.onboarding:
           ),
           settings: settings,
         );
-
+case AppRoutes.myInterests:
+  return CupertinoPageRoute(
+    builder: (_) => const MyInterestsPage(),
+    settings: settings,
+  );
 
       default:
         return CupertinoPageRoute(

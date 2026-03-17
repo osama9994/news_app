@@ -51,66 +51,75 @@ class _MyInterestsPageState extends State<MyInterestsPage>
 
   String _capitalize(String text) =>
       text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
+@override
+Widget build(BuildContext context) {
+  // الحصول على الثيم الحالي لسهولة الاستخدام
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AppBarButton(
-            onTap: () => Navigator.pop(context),
-            iconData: Icons.arrow_back,
-            color: Colors.black,
-          ),
+  return Scaffold(
+    // ✅ تغيير من Colors.white إلى لون خلفية الثيم
+    backgroundColor: theme.scaffoldBackgroundColor,
+    appBar: AppBar(
+      // ✅ جعل لون الـ AppBar يتبع الثيم (تلقائياً من AppTheme)
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      elevation: 0,
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: AppBarButton(
+          onTap: () => Navigator.pop(context),
+          iconData: Icons.arrow_back,
+          // ✅ تغيير من Colors.black إلى لون الأيقونات في الثيم
+          color: isDarkMode ? Colors.white : Colors.black,
         ),
-        title: const Text(
-          "My Interests",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+      ),
+      title: Text(
+        "My Interests",
+        style: TextStyle(
+          // ✅ تغيير من Colors.black إلى لون النص في الثيم
+          color: isDarkMode ? Colors.white : Colors.black,
+          fontWeight: FontWeight.bold,
         ),
-        centerTitle: true,
-        actions: [
-          AppBarButton(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.search),
-            iconData: Icons.search,
-            color: Colors.black,
-            hasPaddingBewteen: true,
-          ),
-          const SizedBox(width: 12),
-        ],
-        bottom: _isLoading || _categories.isEmpty
-            ? null
-            : TabBar(
+      ),
+      centerTitle: true,
+      actions: [
+        AppBarButton(
+          onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+          iconData: Icons.search,
+          // ✅ لون ديناميكي للزر
+          color: isDarkMode ? Colors.white : Colors.black,
+          hasPaddingBewteen: true,
+        ),
+        const SizedBox(width: 12),
+      ],
+      bottom: _isLoading || _categories.isEmpty
+          ? null
+          : TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              indicatorColor: AppColors.primary,
+              labelColor: AppColors.primary,
+              // ✅ لون التبويب غير المختار (رمادي فاتح في المظلم، ورمادي عادي في الفاتح)
+              unselectedLabelColor: isDarkMode ? Colors.grey[400] : AppColors.grey,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              tabs: _categories
+                  .map((cat) => Tab(text: _capitalize(cat)))
+                  .toList(),
+            ),
+    ),
+    body: _isLoading
+        ? const Center(child: CircularProgressIndicator.adaptive())
+        : _categories.isEmpty
+            ? const EmptyInterestsWidget()
+            : TabBarView(
                 controller: _tabController,
-                isScrollable: true,
-                indicatorColor: AppColors.primary,
-                labelColor: AppColors.primary,
-                unselectedLabelColor: AppColors.grey,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-                tabs: _categories
-                    .map((cat) => Tab(text: _capitalize(cat)))
+                children: _categories
+                    .map((cat) => CategoryTabWidget(category: cat))
                     .toList(),
               ),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator.adaptive())
-          : _categories.isEmpty
-              ? const EmptyInterestsWidget()
-              : TabBarView(
-                  controller: _tabController,
-                  children: _categories
-                      .map((cat) => CategoryTabWidget(category: cat))
-                      .toList(),
-                ),
-    );
-  }
+  );
+}
 }

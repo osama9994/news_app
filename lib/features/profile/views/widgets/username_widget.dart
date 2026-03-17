@@ -18,7 +18,7 @@ class UsernameWidget extends StatelessWidget {
         Text(
           username,
           style: const TextStyle(
-              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.grey),
         ),
         const SizedBox(width: 8),
        

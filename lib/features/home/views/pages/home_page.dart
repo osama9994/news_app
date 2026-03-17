@@ -1,124 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:news_app/core/utils/route/app_routes.dart';
-// import 'package:news_app/core/views/widgets/app_bar_button.dart';
 
-// import 'package:news_app/core/views/widgets/app_drawer.dart';
-// import 'package:news_app/features/home/home_cubit/home_cubit.dart';
-// import 'package:news_app/features/home/views/widget/custom_carousel_slider.dart';
-// import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
-// import 'package:news_app/features/home/views/widget/title_headline_widget.dart';
-
-// class HomePage extends StatefulWidget {
-//   const HomePage({super.key});
-
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-// }
-// class _HomePageState extends State<HomePage> {
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     // ✅ شغّل الأخبار مرة واحدة عند فتح الشاشة
-//     context.read<HomeCubit>().getHomeNews();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(  // ✅ مباشرةً بدون BlocProvider
-//       key: _scaffoldKey,
-//               appBar: AppBar(
-//           backgroundColor: Colors.white,
-//           elevation: 0,
-//           leading: Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: AppBarButton(
-//               onTap: () => _scaffoldKey.currentState!.openDrawer(),
-//               iconData: Icons.menu,
-//             ),
-//           ),
-//           actions: [
-//             AppBarButton(
-//               onTap: () => Navigator.pushNamed(context, AppRoutes.search),
-//               iconData: Icons.search,
-//               hasPaddingBewteen: true,
-//             ),
-//             const SizedBox(width: 12),
-//             AppBarButton(
-//               onTap: () {
-//                 Navigator.pushNamed(context, AppRoutes.notifications);
-//               },
-//               iconData: Icons.notifications_none_rounded,
-//               hasPaddingBewteen: true,
-//             ),
-//             const SizedBox(width: 12),
-//           ],
-//         ),
-//       drawer: AppDrawer(),
-//       body: SafeArea(
-//         child: RefreshIndicator(
-//           onRefresh: () async {
-//             await context.read<HomeCubit>().getHomeNews();
-//           },
-//           child: SingleChildScrollView(
-//             physics: const AlwaysScrollableScrollPhysics(),
-//             child: Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 16),
-//               child: Column(
-//                 children: [
-//                   TitleHeadlineWidget(
-//                     title: "Breaking News",
-//                     onTap: () => Navigator.pushNamed(
-//                       context, AppRoutes.breakingNews,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 8),
-//                   SizedBox(
-//                     height: 280,
-//                     child: BlocBuilder<HomeCubit, HomeState>(
-//                       builder: (context, state) {
-//                         if (state is HomeLoading) {
-//                           return const Center(child: CircularProgressIndicator.adaptive());
-//                         } else if (state is HomeLoaded) {
-//                           return CustomCarouselSlider(articles: state.breakingNews);
-//                         } else if (state is HomeError) {
-//                           return Center(child: Text(state.message));
-//                         }
-//                         return const SizedBox.shrink();
-//                       },
-//                     ),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   TitleHeadlineWidget(
-//                     title: "Recommendation",
-//                     onTap: () => Navigator.pushNamed(
-//                       context, AppRoutes.recommendationNews,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 8),
-//                   BlocBuilder<HomeCubit, HomeState>(
-//                     builder: (context, state) {
-//                       if (state is HomeLoading) {
-//                         return const Center(child: CircularProgressIndicator.adaptive());
-//                       } else if (state is HomeLoaded) {
-//                         return RecommendationListWidget(articles: state.recommendationNews);
-//                       } else if (state is HomeError) {
-//                         return Center(child: Text(state.message));
-//                       }
-//                       return const SizedBox.shrink();
-//                     },
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
@@ -145,35 +25,42 @@ class _HomePageState extends State<HomePage> {
     context.read<HomeCubit>().getHomeNews();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AppBarButton(
-            onTap: () => _scaffoldKey.currentState!.openDrawer(),
-            iconData: Icons.menu,
-          ),
+@override
+Widget build(BuildContext context) {
+  // ✅ تعريف متغيرات الثيم لتسهيل الاستخدام
+  final theme = Theme.of(context);
+  return Scaffold(
+    key: _scaffoldKey,
+   
+    backgroundColor: theme.scaffoldBackgroundColor, 
+    
+    appBar: AppBar(
+      // ✅ 2. تغيير اللون الأبيض إلى لون الثيم
+      backgroundColor: theme.appBarTheme.backgroundColor, 
+      elevation: 0,
+      leading: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: AppBarButton(
+          onTap: () => _scaffoldKey.currentState!.openDrawer(),
+          iconData: Icons.menu,
+       
         ),
-        actions: [
-          AppBarButton(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.search),
-            iconData: Icons.search,
-            hasPaddingBewteen: true,
-          ),
-          const SizedBox(width: 12),
-          AppBarButton(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
-            iconData: Icons.notifications_none_rounded,
-            hasPaddingBewteen: true,
-          ),
-          const SizedBox(width: 12),
-        ],
       ),
+      actions: [
+        AppBarButton(
+          onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+          iconData: Icons.search,
+          hasPaddingBewteen: true,
+        ),
+        const SizedBox(width: 12),
+        AppBarButton(
+          onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
+          iconData: Icons.notifications_none_rounded,
+          hasPaddingBewteen: true,
+        ),
+        const SizedBox(width: 12),
+      ],
+    ),
       drawer: AppDrawer(),
       // ✅ BlocBuilder واحد يغلّف كل الـ body
       body: SafeArea(

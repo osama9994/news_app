@@ -2,7 +2,6 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:news_app/core/utils/theme/app_colors.dart';
 
 class LabelWithTextField extends StatefulWidget {
   final String label;
@@ -80,6 +79,11 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    // ignore: deprecated_member_use
+    final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceVariant;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -98,7 +102,7 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
           obscureText: _isObscure,
           decoration: InputDecoration(
             prefixIcon: Icon(widget.prefixIcon),
-            prefixIconColor: AppColors.grey,
+            prefixIconColor: cs.onSurfaceVariant,
 
             // 👇 هنا الحل
             suffixIcon: widget.obsecureText
@@ -116,18 +120,34 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
                   )
                 : widget.suffixIcon,
 
-            suffixIconColor: AppColors.grey,
+            suffixIconColor: cs.onSurfaceVariant,
             hintText: widget.hintText,
-            fillColor: AppColors.grey2,
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+            ),
+            fillColor: fillColor,
             filled: true,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: cs.primary,
+                width: 1.5,
+              ),
+            ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(
-                color: AppColors.red,
+              borderSide: BorderSide(
+                color: cs.error,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: cs.error,
               ),
             ),
           ),

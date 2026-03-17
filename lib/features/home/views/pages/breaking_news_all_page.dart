@@ -15,15 +15,7 @@ class BreakingNewsAllPage extends StatelessWidget {
       create: (_) => ViewAllNewsCubit()..loadBreakingNews(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            "Breaking News",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          title: const Text("Breaking News"),
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: AppBarButton(

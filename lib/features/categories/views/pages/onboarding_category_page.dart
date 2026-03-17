@@ -59,7 +59,6 @@ class _OnboardingCategoryPageState extends State<OnboardingCategoryPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: SafeArea(
@@ -91,7 +90,7 @@ class _OnboardingCategoryPageState extends State<OnboardingCategoryPage>
                       style: GoogleFonts.poppins(
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                         height: 1.2,
                       ),
                     ),

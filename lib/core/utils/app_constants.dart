@@ -12,5 +12,6 @@ static const String favoritesKey="favorites";
 //Hive
 static const String localDatabaseBox="local_database";
 static const String notificationsKey = "notifications";
+static const String themeModeKey = "theme_mode";
 
 }

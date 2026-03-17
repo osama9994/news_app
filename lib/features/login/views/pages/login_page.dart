@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
-import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/features/login/views/pages/forgot_passowrd_page.dart';
 import 'package:news_app/features/login/views/widgets/label_with_textField.dart';
 import 'package:news_app/features/login/views/widgets/main_button.dart';
@@ -45,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                   Text(
                     'Please, login with registered account!',
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                          color: AppColors.grey,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                   const SizedBox(height: 24),
@@ -138,7 +137,9 @@ class _LoginPageState extends State<LoginPage> {
                           'Or using other method',
                           style:
                               Theme.of(context).textTheme.labelLarge!.copyWith(
-                                    color: AppColors.grey,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                         ),
                         const SizedBox(height: 16),

@@ -3,15 +3,17 @@ import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
-
 class RecommendationNewsPage extends StatelessWidget {
-  final List<Article> articles; // تمرير Recommended News
+  final List<Article> articles;
 
   const RecommendationNewsPage({super.key, required this.articles});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // ✅ الوصول للثيم
+
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅ خلفية ديناميكية
       appBar: AppBar(
         title: const Text("Recommendation News"),
         leading: Padding(
@@ -27,6 +29,8 @@ class RecommendationNewsPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SingleChildScrollView(
+            // ✅ إضافة AlwaysScrollableScrollPhysics لضمان عمل الـ Scroll دائماً
+            physics: const AlwaysScrollableScrollPhysics(),
             child: RecommendationListWidget(articles: articles),
           ),
         ),

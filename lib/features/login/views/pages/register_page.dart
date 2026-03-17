@@ -52,7 +52,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: Theme.of(context)
                         .textTheme
                         .labelLarge!
-                        .copyWith(color: AppColors.grey),
+                        .copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: 24),
                   LabelWithTextField(
@@ -136,7 +138,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: Theme.of(context)
                         .textTheme
                         .labelLarge!
-                        .copyWith(color: AppColors.grey),
+                        .copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                   const SizedBox(height: 16),
                   BlocConsumer<AuthCubit, AuthState>(

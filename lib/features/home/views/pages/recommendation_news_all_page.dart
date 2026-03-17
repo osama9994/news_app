@@ -15,15 +15,7 @@ class RecommendationNewsAllPage extends StatelessWidget {
       create: (_) => ViewAllNewsCubit()..loadRecommendationNews(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            "Recommendation",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          title: const Text("Recommendation"),
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: AppBarButton(

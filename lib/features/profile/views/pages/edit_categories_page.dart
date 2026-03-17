@@ -53,7 +53,6 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Edit Interests',
@@ -84,7 +83,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),

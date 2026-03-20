@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:news_app/core/data/categories_data.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
@@ -36,11 +35,7 @@ Widget build(BuildContext context) {
       ),
       title: Text(
         'Categories',
-        style: GoogleFonts.poppins(
-          // ✅ تغيير لون النص بناءً على الوضع
-          color: isDarkMode ? Colors.white : Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
+         style:Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
       ),
       centerTitle: true,
       actions: [
@@ -74,7 +69,6 @@ Widget build(BuildContext context) {
         ),
         itemBuilder: (context, index) {
           final category = categories[index];
-
           return CategoryCard(
             category: category,
             onTap: () {

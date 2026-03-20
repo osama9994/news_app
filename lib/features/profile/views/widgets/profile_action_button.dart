@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileActionButton extends StatelessWidget {
   final IconData icon;
@@ -17,7 +18,10 @@ class ProfileActionButton extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: onTap,
       icon: Icon(icon, color: Colors.white),
-      label: Text(text),
+      label: Text(text,style:  GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: 18,
+              ),),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blueAccent,
         minimumSize: const Size.fromHeight(50),

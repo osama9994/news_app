@@ -52,6 +52,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+  final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -62,7 +63,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: AppColors.primary,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),

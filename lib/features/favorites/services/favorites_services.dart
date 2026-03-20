@@ -85,7 +85,7 @@ class FavoritesServices {
         .get();
 
     return snapshot.docs
-        .map((doc) => Article.fromJson(doc.data() as String)) // ✅ إصلاح: بدون as String
+        .map((doc) => Article.fromJson(doc.data()))
         .toList();
   }
 
@@ -96,12 +96,15 @@ class FavoritesServices {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
+    final docId = article.title ?? article.url;
+    if (docId == null || docId.isEmpty) return;
+
     await firestore
         .collection('users')
         .doc(user.uid)
         .collection('favorites')
-        .doc(article.title)
-        .set(article.toJson() as Map<String, dynamic>); // ✅ إصلاح: بدون as Map<String, dynamic>
+        .doc(docId)
+        .set(article.toMap());
   }
 
   // =========================
@@ -111,11 +114,14 @@ class FavoritesServices {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
+    final docId = article.title ?? article.url;
+    if (docId == null || docId.isEmpty) return;
+
     await firestore
         .collection('users')
         .doc(user.uid)
         .collection('favorites')
-        .doc(article.title)
+        .doc(docId)
         .delete();
   }
 }

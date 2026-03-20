@@ -16,18 +16,47 @@ class FavoriteActionsCubit extends Cubit<FavoriteActionsState> {
 
   bool _initialized = false;
 
+  String _articleKey(Article a) {
+    final title = a.title;
+    if (title != null && title.isNotEmpty) return 'title:$title';
+    final url = a.url;
+    if (url != null && url.isNotEmpty) return 'url:$url';
+    return 'fallback:${a.hashCode}';
+  }
+
+  List<Article> _mergeFavorites(List<Article> a, List<Article> b) {
+    final map = <String, Article>{};
+    for (final item in [...a, ...b]) {
+      map[_articleKey(item)] = item;
+    }
+    return map.values.toList();
+  }
+
   Future<void> initFavorites() async {
     // Ensure initialization logic runs only once
     if (_initialized) return;
     _initialized = true;
 
-    _favorites = await favoritesServices.getFavoriteHive();
+    final hiveFavorites = await favoritesServices.getFavoriteHive();
+    _favorites = List<Article>.from(hiveFavorites);
     emit(FavoriteActionsUpdated(List<Article>.from(_favorites)));
 
-    final firebaseFavorites = await favoritesServices.getFavoritesFromFirebase();
-    _favorites = firebaseFavorites;
-    await favoritesServices.localDatabaseHive.saveData('favorites', _favorites);
-    emit(FavoriteActionsUpdated(List<Article>.from(_favorites)));
+    try {
+      final firebaseFavorites = await favoritesServices.getFavoritesFromFirebase();
+
+      // Avoid wiping local Hive favorites with an empty Firebase result
+      // (common when Firebase/auth isn't ready during hot reload).
+      if (firebaseFavorites.isNotEmpty) {
+        _favorites = _mergeFavorites(hiveFavorites, firebaseFavorites);
+        await favoritesServices.localDatabaseHive.saveData(
+          'favorites',
+          _favorites,
+        );
+        emit(FavoriteActionsUpdated(List<Article>.from(_favorites)));
+      }
+    } catch (_) {
+      // If Firebase fails, keep Hive favorites so UI doesn't disappear.
+    }
   }
 
   Future<void> setFavorite(Article article) async {

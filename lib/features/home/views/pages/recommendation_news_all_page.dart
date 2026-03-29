@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/home/view_all_cubit/view_all_news_cubit.dart';
 import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
 
@@ -39,9 +40,7 @@ class RecommendationNewsAllPage extends StatelessWidget {
             child: BlocBuilder<ViewAllNewsCubit, ViewAllNewsState>(
               builder: (context, state) {
                 if (state is ViewAllNewsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
+                  return InterestsShimmer();
                 }
 
                 if (state is ViewAllNewsLoaded) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/features/categories/category_cubit/category_cubit.dart';
 import 'package:news_app/features/categories/category_cubit/category_state.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
 
 class CategoryTabWidget extends StatelessWidget {
@@ -16,7 +17,10 @@ class CategoryTabWidget extends StatelessWidget {
       child: BlocBuilder<CategoryCubit, CategoryState>(
         builder: (context, state) {
           if (state is CategoryLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InterestsShimmer(),
+            );
           }
 
           if (state is CategoryLoaded) {

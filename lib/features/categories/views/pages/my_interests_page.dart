@@ -6,6 +6,7 @@ import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/widgets/category_tab_widget.dart';
 import 'package:news_app/features/categories/views/widgets/empty_interests_widget.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 
 class MyInterestsPage extends StatefulWidget {
   const MyInterestsPage({super.key});
@@ -58,6 +59,17 @@ Widget build(BuildContext context) {
   final isDarkMode = theme.brightness == Brightness.dark;
 
   return Scaffold(
+     body: _isLoading
+    ?  InterestsShimmer()  
+    : _categories.isEmpty
+        ? const EmptyInterestsWidget()
+        
+            : TabBarView(
+                controller: _tabController,
+                children: _categories
+                    .map((cat) => CategoryTabWidget(category: cat))
+                    .toList(),
+              ),
     // ✅ تغيير من Colors.white إلى لون خلفية الثيم
     backgroundColor: theme.scaffoldBackgroundColor,
     appBar: AppBar(
@@ -110,16 +122,7 @@ Widget build(BuildContext context) {
                   .toList(),
             ),
     ),
-    body: _isLoading
-        ? const Center(child: CircularProgressIndicator.adaptive())
-        : _categories.isEmpty
-            ? const EmptyInterestsWidget()
-            : TabBarView(
-                controller: _tabController,
-                children: _categories
-                    .map((cat) => CategoryTabWidget(category: cat))
-                    .toList(),
-              ),
+   
   );
 }
 }

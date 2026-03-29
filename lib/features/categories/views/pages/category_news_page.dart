@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/category_cubit/category_cubit.dart';
 import 'package:news_app/features/categories/category_cubit/category_state.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
@@ -47,8 +48,7 @@ class CategoryNewsPage extends StatelessWidget {
             child: BlocBuilder<CategoryCubit, CategoryState>(
               builder: (context, state) {
                 if (state is CategoryLoading) {
-                  return const Center(
-                      child: CircularProgressIndicator.adaptive());
+                  return InterestsShimmer(); 
                 }
 
                 if (state is CategoryLoaded) {

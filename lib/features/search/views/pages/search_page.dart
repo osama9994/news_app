@@ -103,6 +103,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/article_widget_item.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
 
 class SearchPage extends StatefulWidget {
@@ -254,9 +255,7 @@ class _SearchPageState extends State<SearchPage> {
                     current is SearchResultError,
                 builder: (context, state) {
                   if (state is Searching) {
-                    return const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
+                    return InterestsShimmer();
                   }
 
                   if (state is SearchResultsLoaded) {

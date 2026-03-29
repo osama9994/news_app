@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/views/widgets/article_widget_item.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/favorites/favorite_cubit/favorite_cubit.dart';
 import 'package:news_app/features/favorites/favorite_cubit/favorite_state.dart';
 
@@ -14,9 +15,7 @@ class FavoritesPage extends StatelessWidget {
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
           if (state is FavoriteLoading) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
+            return InterestsShimmer();
           } else if (state is FavoriteLoaded) {
             final articles = state.articles;
             if (articles.isEmpty) {

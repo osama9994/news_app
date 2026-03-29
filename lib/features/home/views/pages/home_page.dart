@@ -6,6 +6,7 @@ import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
 import 'package:news_app/features/home/home_cubit/home_cubit.dart';
 import 'package:news_app/features/home/views/widget/custom_carousel_slider.dart';
+import 'package:news_app/features/home/views/widget/home_shimmer.dart';
 import 'package:news_app/features/home/views/widget/recommendation_list_widget.dart';
 import 'package:news_app/features/home/views/widget/title_headline_widget.dart';
 
@@ -69,9 +70,8 @@ Widget build(BuildContext context) {
 
             // ✅ Loading واحد للشاشة كاملة
             if (state is HomeLoading) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
+              return HomeShimmer();
+             
             }
 
             // ✅ Error واحد للشاشة كاملة

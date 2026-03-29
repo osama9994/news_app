@@ -54,6 +54,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
 import 'package:news_app/features/notifications/notification_cubit/notification_cubit.dart';
 import 'package:news_app/features/notifications/notification_cubit/notification_state.dart';
@@ -129,7 +130,7 @@ class NotificationsPage extends StatelessWidget {
             );
           }
 
-          return const Center(child: CircularProgressIndicator());
+          return InterestsShimmer();
         },
       ),
     );

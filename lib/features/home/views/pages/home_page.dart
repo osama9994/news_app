@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:news_app/core/views/widgets/app_drawer.dart';
+import 'package:news_app/core/views/widgets/empty_state_widget.dart';
 import 'package:news_app/features/home/home_cubit/home_cubit.dart';
 import 'package:news_app/features/home/views/widget/custom_carousel_slider.dart';
 import 'package:news_app/features/home/views/widget/home_shimmer.dart';
@@ -64,82 +65,141 @@ Widget build(BuildContext context) {
     ),
       drawer: AppDrawer(),
       // ✅ BlocBuilder واحد يغلّف كل الـ body
-      body: SafeArea(
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
+      // body: SafeArea(
+      //   child: BlocBuilder<HomeCubit, HomeState>(
+      //     builder: (context, state) {
 
-            // ✅ Loading واحد للشاشة كاملة
-            if (state is HomeLoading) {
-              return HomeShimmer();
+      //       // ✅ Loading واحد للشاشة كاملة
+      //       if (state is HomeLoading) {
+      //         return HomeShimmer();
              
-            }
+      //       }
 
-            // ✅ Error واحد للشاشة كاملة
-            if (state is HomeError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                    const SizedBox(height: 12),
-                    Text(state.message),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () => context.read<HomeCubit>().getHomeNews(),
-                      child: const Text("Try Again"),
-                    ),
-                  ],
-                ),
-              );
-            }
+      //       // ✅ Error واحد للشاشة كاملة
+      //       if (state is HomeError) {
+      //         return Center(
+      //           child: Column(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               const Icon(Icons.error_outline, size: 48, color: Colors.red),
+      //               const SizedBox(height: 12),
+      //               Text(state.message),
+      //               const SizedBox(height: 12),
+      //               ElevatedButton(
+      //                 onPressed: () => context.read<HomeCubit>().getHomeNews(),
+      //                 child: const Text("Try Again"),
+      //               ),
+      //             ],
+      //           ),
+      //         );
+      //       }
 
-            // ✅ Loaded — عرض كل المحتوى
-            if (state is HomeLoaded) {
-              return RefreshIndicator(
-                onRefresh: () async {
-                  await context.read<HomeCubit>().getHomeNews();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: [
-                        TitleHeadlineWidget(
-                          title: "Breaking News",
-                          onTap: () => Navigator.pushNamed(
-                            context, AppRoutes.breakingNews,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 280,
-                          child: CustomCarouselSlider(
-                            articles: state.breakingNews,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TitleHeadlineWidget(
-                          title: "Recommendation",
-                          onTap: () => Navigator.pushNamed(
-                            context, AppRoutes.recommendationNews,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        RecommendationListWidget(
-                          articles: state.recommendationNews,
-                        ),
-                      ],
-                    ),
+      //       // ✅ Loaded — عرض كل المحتوى
+      //       if (state is HomeLoaded) {
+      //         return RefreshIndicator(
+      //           onRefresh: () async {
+      //             await context.read<HomeCubit>().getHomeNews();
+      //           },
+      //           child: SingleChildScrollView(
+      //             physics: const AlwaysScrollableScrollPhysics(),
+      //             child: Padding(
+      //               padding: const EdgeInsets.symmetric(horizontal: 16),
+      //               child: Column(
+      //                 children: [
+      //                   TitleHeadlineWidget(
+      //                     title: "Breaking News",
+      //                     onTap: () => Navigator.pushNamed(
+      //                       context, AppRoutes.breakingNews,
+      //                     ),
+      //                   ),
+      //                   const SizedBox(height: 8),
+      //                   SizedBox(
+      //                     height: 280,
+      //                     child: CustomCarouselSlider(
+      //                       articles: state.breakingNews,
+      //                     ),
+      //                   ),
+      //                   const SizedBox(height: 16),
+      //                   TitleHeadlineWidget(
+      //                     title: "Recommendation",
+      //                     onTap: () => Navigator.pushNamed(
+      //                       context, AppRoutes.recommendationNews,
+      //                     ),
+      //                   ),
+      //                   const SizedBox(height: 8),
+      //                   RecommendationListWidget(
+      //                     articles: state.recommendationNews,
+      //                   ),
+      //                 ],
+      //               ),
+      //             ),
+      //           ),
+      //         );
+      //       }
+
+      //       return const SizedBox.shrink();
+      //     },
+      //   ),
+      // ),
+      body: SafeArea(
+  child: BlocBuilder<HomeCubit, HomeState>(
+    builder: (context, state) {
+
+      if (state is HomeLoading) {
+        return HomeShimmer();
+      }
+
+      // ✅ Offline / Error UI محسّن
+    if (state is HomeError) {
+  return EmptyStateWidget(
+    icon: state.message.contains("No Internet") ? Icons.cloud_off : Icons.error_outline,
+    title:"You are offline!",
+    subtitle: "Check your connection or try again.",
+    buttonText: "Retry",
+    onButtonPressed: () => context.read<HomeCubit>().getHomeNews(),
+    extraButton: TextButton(
+      onPressed: () => Navigator.pushNamed(context, '/favorites'),
+      child: const Text("Go to Favorites", style: TextStyle(decoration: TextDecoration.underline)),
+    ),
+  );
+}
+
+      if (state is HomeLoaded) {
+        return RefreshIndicator(
+          onRefresh: () async => await context.read<HomeCubit>().getHomeNews(),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  TitleHeadlineWidget(
+                    title: "Breaking News",
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.breakingNews),
                   ),
-                ),
-              );
-            }
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 280,
+                    child: CustomCarouselSlider(articles: state.breakingNews),
+                  ),
+                  const SizedBox(height: 16),
+                  TitleHeadlineWidget(
+                    title: "Recommendation",
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.recommendationNews),
+                  ),
+                  const SizedBox(height: 8),
+                  RecommendationListWidget(articles: state.recommendationNews),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
 
-            return const SizedBox.shrink();
-          },
-        ),
-      ),
+      return const SizedBox.shrink();
+    },
+  ),
+),
     );
   }
 }

@@ -103,6 +103,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/article_widget_item.dart';
+import 'package:news_app/core/views/widgets/empty_state_widget.dart';
 import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/search/search_cubit/search_cubit.dart';
 
@@ -246,82 +247,178 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(height: 16),
 
             // ── Results ──
+            // Expanded(
+            //   child: BlocBuilder<SearchCubit, SearchState>(
+            //     bloc: searchCubit,
+            //     buildWhen: (_, current) =>
+            //         current is Searching ||
+            //         current is SearchResultsLoaded ||
+            //         current is SearchResultError,
+            //     builder: (context, state) {
+            //       if (state is Searching) {
+            //         return InterestsShimmer();
+            //       }
+
+            //       if (state is SearchResultsLoaded) {
+            //         final articles = state.articles;
+            //         if (articles.isEmpty) {
+            //           return const Center(
+            //             child: Column(
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 Icon(Icons.search_off,
+            //                     size: 64, color: Colors.grey),
+            //                 SizedBox(height: 12),
+            //                 Text(
+            //                   "No articles found",
+            //                   style: TextStyle(color: Colors.grey),
+            //                 ),
+            //               ],
+            //             ),
+            //           );
+            //         }
+
+            //         return ListView.separated(
+            //           itemCount: articles.length,
+            //           separatorBuilder: (_, __) =>
+            //               const SizedBox(height: 16),
+            //           itemBuilder: (_, index) => ArticleWidgetItem(
+            //             article: articles[index],
+            //             isSmaller: true,
+            //           ),
+            //         );
+            //       }
+
+            //       if (state is SearchResultError) {
+            //         return Center(
+            //           child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               const Icon(Icons.error_outline,
+            //                   size: 48, color: Colors.red),
+            //               const SizedBox(height: 12),
+            //               Text(state.message,
+            //                   textAlign: TextAlign.center,
+            //                   style: const TextStyle(color: Colors.grey)),
+            //             ],
+            //           ),
+            //         );
+            //       }
+
+            //       // ── Initial State ──
+            //       return const Center(
+            //         child: Column(
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Icon(Icons.newspaper_outlined,
+            //                 size: 64, color: Colors.grey),
+            //             SizedBox(height: 12),
+            //             Text(
+            //               "Search for any news topic",
+            //               style: TextStyle(color: Colors.grey),
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             Expanded(
-              child: BlocBuilder<SearchCubit, SearchState>(
-                bloc: searchCubit,
-                buildWhen: (_, current) =>
-                    current is Searching ||
-                    current is SearchResultsLoaded ||
-                    current is SearchResultError,
-                builder: (context, state) {
-                  if (state is Searching) {
-                    return InterestsShimmer();
-                  }
+  child: BlocBuilder<SearchCubit, SearchState>(
+    bloc: searchCubit,
+    buildWhen: (_, current) =>
+        current is Searching ||
+        current is SearchResultsLoaded ||
+        current is SearchResultError,
+    builder: (context, state) {
+      if (state is Searching) {
+        return InterestsShimmer();
+      }
 
-                  if (state is SearchResultsLoaded) {
-                    final articles = state.articles;
-                    if (articles.isEmpty) {
-                      return const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.search_off,
-                                size: 64, color: Colors.grey),
-                            SizedBox(height: 12),
-                            Text(
-                              "No articles found",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
+      // ✅ نتائج البحث Loaded
+      if (state is SearchResultsLoaded) {
+        final articles = state.articles;
 
-                    return ListView.separated(
-                      itemCount: articles.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 16),
-                      itemBuilder: (_, index) => ArticleWidgetItem(
-                        article: articles[index],
-                        isSmaller: true,
-                      ),
-                    );
-                  }
-
-                  if (state is SearchResultError) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.error_outline,
-                              size: 48, color: Colors.red),
-                          const SizedBox(height: 12),
-                          Text(state.message,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    );
-                  }
-
-                  // ── Initial State ──
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.newspaper_outlined,
-                            size: 64, color: Colors.grey),
-                        SizedBox(height: 12),
-                        Text(
-                          "Search for any news topic",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
+        if (articles.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                const SizedBox(height: 12),
+                const Text(
+                  "No articles found",
+                  style: TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => _doSearch(context),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text("Retry Search"),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(context, '/favorites'),
+                  child: const Text(
+                    "Go to Offline Favorites",
+                    style: TextStyle(decoration: TextDecoration.underline),
+                  ),
+                ),
+              ],
             ),
+          );
+        }
+
+        // ── عرض المقالات
+        return ListView.separated(
+          itemCount: articles.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          itemBuilder: (_, index) => ArticleWidgetItem(
+            article: articles[index],
+            isSmaller: true,
+          ),
+        );
+      }
+
+      // ✅ خطأ أو Offline
+      if (state is SearchResultError) {
+      return EmptyStateWidget(
+    icon: Icons.search_off,
+    title: "No articles found",
+    buttonText: "Retry Search",
+    onButtonPressed: () => _doSearch(context),
+    extraButton: TextButton(
+      onPressed: () => Navigator.pushNamed(context, '/favorites'),
+      child: const Text("Go to Favorites", style: TextStyle(decoration: TextDecoration.underline)),
+    ),
+  );
+      }
+
+      // ── الحالة الأولية
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.newspaper_outlined, size: 64, color: Colors.grey),
+            SizedBox(height: 12),
+            Text(
+              "Search for any news topic",
+              style: TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    },
+  ),
+),
           ],
         ),
       ),

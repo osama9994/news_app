@@ -53,9 +53,9 @@ class ArticleDetailsPage extends StatelessWidget {
                 begin: Alignment.bottomCenter,
                 colors: [
                   isDarkMode
-                      ? Colors.black.withValues(alpha: 0.8)
-                      : Colors.black.withOpacity(0.8),
-                  Colors.black.withOpacity(0.1),
+                      ? Colors.black.withOpacity(0.8)
+                      :Colors.black.withOpacity(0.8),
+                  Colors.black.withOpacity(0.2),
                 ],
               ),
             ),
@@ -74,7 +74,7 @@ class ArticleDetailsPage extends StatelessWidget {
                     iconData: Icons.arrow_back_outlined,
                     hasPaddingBewteen: true,
                     color: Colors.white,
-                    backgroundColor: Colors.black.withOpacity(0.35),
+                    backgroundColor: Colors.black.withOpacity(0.35)
                   ),
                   Row(
                     children: [
@@ -84,7 +84,7 @@ class ArticleDetailsPage extends StatelessWidget {
                         iconData: Icons.share,
                         hasPaddingBewteen: true,
                         color: Colors.white,
-                        backgroundColor: Colors.black.withOpacity(0.35),
+                        backgroundColor:  Colors.black.withOpacity(0.35),
                       ),
                       const SizedBox(width: 12),
                       BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
@@ -98,7 +98,7 @@ class ArticleDetailsPage extends StatelessWidget {
                                 : Icons.favorite_border_outlined,
                             hasPaddingBewteen: true,
                             color: isFav ? Colors.red : Colors.white,
-                            backgroundColor: Colors.black.withOpacity(0.35),
+                            backgroundColor:  Colors.black.withOpacity(0.35),
                           );
                         },
                       ),

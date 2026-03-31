@@ -1,57 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:news_app/features/home/views/pages/article_details_page.dart';
-// import 'package:news_app/features/notifications/notification_cubit/notification_cubit.dart';
-// import 'package:news_app/features/notifications/notification_cubit/notification_state.dart';
-
-// class NotificationsPage extends StatelessWidget {
-//   const NotificationsPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Notifications")),
-//       body: BlocBuilder<NotificationCubit, NotificationState>(
-//         builder: (context, state) {
-//           if (state is NotificationLoaded) {
-//             if (state.articles.isEmpty) {
-//               return const Center(child: Text("No Notifications"));
-//             }
-
-//             return ListView.builder(
-//               itemCount: state.articles.length,
-//               itemBuilder: (context, index) {
-//                 final article = state.articles[index];
-
-//                 return ListTile(
-//                   leading: Image.network(
-//                     article.urlToImage ?? "",
-//                     width: 60,
-//                     fit: BoxFit.cover,
-//                   ),
-//                   title: Text(article.title ?? ""),
-//                   subtitle: Text(article.source?.name ?? ""),
-//                   onTap: () {
-//                     Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                         builder: (_) =>
-//                             ArticleDetailsPage(article: article),
-//                       ),
-//                     );
-//                   },
-//                 );
-//               },
-//             );
-//           }
-
-//           return const Center(child: CircularProgressIndicator());
-//         },
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
@@ -116,6 +62,15 @@ class NotificationsPage extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.grey),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: "Delete notification",
+                    onPressed: () {
+                      context
+                          .read<NotificationCubit>()
+                          .deleteNotification(article);
+                    },
                   ),
                   onTap: () {
                     Navigator.push(

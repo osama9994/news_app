@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
 import 'package:news_app/core/models/article_model.dart';
@@ -18,6 +19,25 @@ class ArticleDetailsPage extends StatelessWidget {
     final url = article.url ?? '';
     final text = url.isNotEmpty ? '$title\n\n$url' : title;
     Share.share(text);
+  }
+
+  Future<void> _readMore(BuildContext context) async {
+    final rawUrl = (article.url ?? '').trim();
+    final uri = Uri.tryParse(rawUrl);
+
+    if (rawUrl.isEmpty || uri == null || !uri.hasScheme) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No article link available.")),
+      );
+      return;
+    }
+
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Couldn't open the article link.")),
+      );
+    }
   }
 
   @override
@@ -205,6 +225,22 @@ class ArticleDetailsPage extends StatelessWidget {
                                 style: OutlinedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () => _readMore(context),
+                                icon: const Icon(Icons.open_in_new_rounded),
+                                label: const Text("Read more"),
+                                style: ElevatedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),

@@ -49,11 +49,9 @@ Widget build(BuildContext context) {
       BlocProvider<NotificationCubit>(create: (context) => NotificationCubit()..loadNotifications()),
       BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
       BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
-      BlocProvider<FavoriteActionsCubit>(
-  create: (context) => FavoriteActionsCubit()..initFavorites(),
-)
+      
     ],
-    // ✅ استبدال Builder بـ BlocBuilder للاستماع لتغييرات الثيم
+ 
     child: BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         // تهيئة خدمة الإشعارات

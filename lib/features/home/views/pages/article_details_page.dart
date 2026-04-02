@@ -218,11 +218,11 @@ class ArticleDetailsPage extends StatelessWidget {
                             // ✅ زر المشاركة في الأسفل
                             SizedBox(
                               width: double.infinity,
-                              child: OutlinedButton.icon(
+                              child: ElevatedButton.icon(
                                 onPressed: _shareArticle,
                                 icon: const Icon(Icons.share_rounded),
                                 label: const Text("Share Article"),
-                                style: OutlinedButton.styleFrom(
+                                style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 12),
                                   shape: RoundedRectangleBorder(

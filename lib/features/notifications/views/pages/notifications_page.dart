@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
 import 'package:news_app/features/home/views/pages/article_details_page.dart';
 import 'package:news_app/features/notifications/notification_cubit/notification_cubit.dart';
@@ -10,21 +11,28 @@ class NotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tr = context.tr;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Notifications")),
+      appBar: AppBar(title: Text(tr.text('notifications'))),
       body: BlocBuilder<NotificationCubit, NotificationState>(
         builder: (context, state) {
           if (state is NotificationLoaded) {
             if (state.articles.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.notifications_off_outlined,
-                        size: 64, color: Colors.grey),
-                    SizedBox(height: 12),
-                    Text("No Notifications yet",
-                        style: TextStyle(color: Colors.grey)),
+                    const Icon(
+                      Icons.notifications_off_outlined,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr.text('noNotificationsYet'),
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
               );
@@ -46,14 +54,12 @@ class NotificationsPage extends StatelessWidget {
                             width: 60,
                             height: 60,
                             fit: BoxFit.cover,
-                            // ✅ عرض placeholder إذا فشل التحميل
                             errorBuilder: (_, __, ___) => _placeholder(),
                           )
-                        // ✅ عرض placeholder إذا لم تكن هناك صورة
                         : _placeholder(),
                   ),
                   title: Text(
-                    article.title ?? "No title",
+                    article.title ?? tr.text('noTitle'),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -65,7 +71,7 @@ class NotificationsPage extends StatelessWidget {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete_outline),
-                    tooltip: "Delete notification",
+                    tooltip: tr.text('deleteNotification'),
                     onPressed: () {
                       context
                           .read<NotificationCubit>()
@@ -91,18 +97,15 @@ class NotificationsPage extends StatelessWidget {
     );
   }
 
-  // ✅ Placeholder widget
   Widget _placeholder() {
     return Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        // ignore: deprecated_member_use
         color: Colors.blue.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Icon(Icons.notifications_rounded,
-          color: Colors.blue, size: 28),
+      child: const Icon(Icons.notifications_rounded, color: Colors.blue, size: 28),
     );
   }
 }

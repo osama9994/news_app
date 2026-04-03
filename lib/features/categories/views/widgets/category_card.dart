@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/features/categories/model/category_model.dart';
 
 
@@ -44,7 +45,7 @@ class CategoryCard extends StatelessWidget {
             Icon(category.icon, color: Colors.white, size: 50),
             const SizedBox(height: 12),
             Text(
-              category.title,
+              context.tr.category(category.title),
               style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 18,

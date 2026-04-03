@@ -2,6 +2,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 
 class LabelWithTextField extends StatefulWidget {
   final String label;
@@ -81,8 +82,8 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    // ignore: deprecated_member_use
     final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceVariant;
+    final tr = context.tr;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +98,7 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
         TextFormField(
           controller: widget.controller,
           validator: (value) => value == null || value.isEmpty
-              ? '${widget.label} cannot be empty!'
+              ? tr.fieldRequired(widget.label)
               : null,
           obscureText: _isObscure,
           decoration: InputDecoration(

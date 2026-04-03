@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
-
+import 'package:news_app/core/localization/app_strings.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -19,9 +19,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
+    final tr = context.tr;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Change Password")),
+      appBar: AppBar(title: Text(tr.text('changePassword'))),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -31,26 +32,35 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               TextFormField(
                 controller: _currentPasswordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: "Current Password"),
-                validator: (value) =>
-                    value!.isEmpty ? "Enter current password" : null,
+                decoration: InputDecoration(
+                  labelText: tr.text('currentPassword'),
+                ),
+                validator: (value) => value!.isEmpty
+                    ? tr.text('enterCurrentPassword')
+                    : null,
               ),
-              const SizedBox(height: 24,),
+              const SizedBox(height: 24),
               TextFormField(
                 controller: _newPasswordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: "New Password"),
+                decoration: InputDecoration(
+                  labelText: tr.text('newPassword'),
+                ),
                 validator: (value) =>
-                    value!.isEmpty ? "Enter new password" : null,
+                    value!.isEmpty ? tr.text('enterNewPassword') : null,
               ),
-              const SizedBox(height: 24,),
+              const SizedBox(height: 24),
               TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: "Confirm Password"),
+                decoration: InputDecoration(
+                  labelText: tr.text('confirmPassword'),
+                ),
                 validator: (value) {
-                  if (value!.isEmpty) return "Confirm new password";
-                  if (value != _newPasswordController.text) return "Passwords do not match";
+                  if (value!.isEmpty) return tr.text('confirmNewPassword');
+                  if (value != _newPasswordController.text) {
+                    return tr.text('passwordsDoNotMatch');
+                  }
                   return null;
                 },
               ),
@@ -79,7 +89,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         );
                       }
                     },
-                    child: const Text("Change Password"),
+                    child: Text(tr.text('changePassword')),
                   );
                 },
               ),

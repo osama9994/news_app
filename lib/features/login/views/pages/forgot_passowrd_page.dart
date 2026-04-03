@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/features/login/views/widgets/label_with_textField.dart';
 import 'package:news_app/features/login/views/widgets/main_button.dart';
 
@@ -18,9 +19,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
+    final tr = context.tr;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Reset Password")),
+      appBar: AppBar(title: Text(tr.text('resetPassword'))),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -28,32 +30,30 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Column(
             children: [
               LabelWithTextField(
-                label: "Email",
+                label: tr.text('email'),
                 controller: emailController,
                 prefixIcon: Icons.email,
-                hintText: "Enter your email",
+                hintText: tr.text('enterYourEmail'),
               ),
               const SizedBox(height: 24),
               MainButton(
-                text: "Send Reset Link",
+                text: tr.text('sendResetLink'),
                 onTap: () async {
                   if (_formKey.currentState!.validate()) {
                     await cubit.resetPassword(
                       email: emailController.text.trim(),
                     );
 
-                    // ignore: use_build_context_synchronously
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Reset link sent to your email"),
+                      SnackBar(
+                        content: Text(tr.text('resetLinkSent')),
                       ),
                     );
-
-                    // ignore: use_build_context_synchronously
                     Navigator.pop(context);
                   }
                 },
-              )
+              ),
             ],
           ),
         ),

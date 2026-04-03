@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/features/login/views/widgets/label_with_textField.dart';
@@ -17,7 +18,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -30,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final AuthCubit cubit = context.read<AuthCubit>();
+    final tr = context.tr;
 
     return Scaffold(
       body: SafeArea(
@@ -43,31 +44,28 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   const SizedBox(height: 50),
                   Text(
-                    "Create Account",
+                    tr.text('createAccount'),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "Make your Knowledge better by creating your account",
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge!
-                        .copyWith(
+                    tr.text('createAccountPrompt'),
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                   const SizedBox(height: 24),
                   LabelWithTextField(
-                    label: "Email",
+                    label: tr.text('email'),
                     prefixIcon: Icons.email,
-                    hintText: "Enter your email",
+                    hintText: tr.text('enterYourEmail'),
                     controller: emailController,
                   ),
                   const SizedBox(height: 16),
                   LabelWithTextField(
-                    label: "Password",
+                    label: tr.text('password'),
                     prefixIcon: Icons.lock,
-                    hintText: "Enter your password",
+                    hintText: tr.text('enterYourPassword'),
                     controller: passwordController,
                     obsecureText: true,
                   ),
@@ -76,18 +74,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     listenWhen: (previous, current) =>
                         current is AuthDone || current is AuthError,
                     listener: (context, state) {
-                      // if (state is AuthDone) {
-                      //   Navigator.pushNamedAndRemoveUntil(
-                      //     context,
-                      //     AppRoutes.home,
-                      //     (route) => false,
-                      //   );
-                      // }
-                      // ✅ بعد
                       if (state is AuthDone) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
-                          AppRoutes.onboarding, // 👈 فقط هذا تغيّر
+                          AppRoutes.onboarding,
                           (route) => false,
                         );
                       } else if (state is AuthError) {
@@ -105,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         return MainButton(isLoading: true);
                       }
                       return MainButton(
-                        text: "Create Account",
+                        text: tr.text('createAccount'),
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             await cubit.registerWithEmailAndPassword(
@@ -123,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        "Already have an account? Login",
+                        tr.text('alreadyHaveAccount'),
                         style: Theme.of(context)
                             .textTheme
                             .labelLarge!
@@ -133,12 +123,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "Or sign up using",
+                    tr.text('orSignUpUsing'),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge!
-                        .copyWith(
+                    style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
@@ -167,13 +154,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (state is GoogleAuthenticating) {
                         return SocialMediaBotton(
                           isLoading: true,
-                          text: "Sign up with Google",
+                          text: tr.text('signUpWithGoogle'),
                           icon: Icons.g_mobiledata,
                           ontap: null,
                         );
                       }
                       return SocialMediaBotton(
-                        text: "Sign up with Google",
+                        text: tr.text('signUpWithGoogle'),
                         icon: Icons.g_mobiledata,
                         ontap: () async {
                           await cubit.signInWithGoogle();

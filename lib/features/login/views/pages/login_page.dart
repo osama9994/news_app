@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/login/views/pages/forgot_passowrd_page.dart';
 import 'package:news_app/features/login/views/widgets/label_with_textField.dart';
@@ -22,14 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = BlocProvider.of<AuthCubit>(context);
+    final tr = context.tr;
 
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -37,34 +37,30 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   const SizedBox(height: 50),
                   Text(
-                    'Login Account',
+                    tr.text('loginAccount'),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Please, login with registered account!',
+                    tr.text('loginPrompt'),
                     style: Theme.of(context).textTheme.labelLarge!.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                   ),
                   const SizedBox(height: 24),
                   LabelWithTextField(
-                    label: 'Email',
+                    label: tr.text('email'),
                     controller: emailController,
                     prefixIcon: Icons.email,
-                    hintText: 'Enter you email',
+                    hintText: tr.text('enterYourEmail'),
                   ),
                   const SizedBox(height: 24),
                   LabelWithTextField(
-                    label: 'Password',
+                    label: tr.text('password'),
                     controller: passwordController,
                     prefixIcon: Icons.password,
-                    hintText: 'Enter you password',
+                    hintText: tr.text('enterYourPassword'),
                     obsecureText: true,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.visibility),
-                      onPressed: () {},
-                    ),
                   ),
                   const SizedBox(height: 8),
                   Align(
@@ -78,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       },
-                      child: const Text('Forgot Password'),
+                      child: Text(tr.text('forgotPassword')),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -91,9 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.of(context).pushNamed(AppRoutes.home);
                       } else if (state is AuthError) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.message),
-                          ),
+                          SnackBar(content: Text(state.message)),
                         );
                       }
                     },
@@ -103,12 +97,10 @@ class _LoginPageState extends State<LoginPage> {
                         current is AuthDone,
                     builder: (context, state) {
                       if (state is AuthLoading) {
-                        return MainButton(
-                          isLoading: true,
-                        );
+                        return MainButton(isLoading: true);
                       }
                       return MainButton(
-                        text: 'Login',
+                        text: tr.text('login'),
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             await cubit.loginWithEmailAndPassword(
@@ -130,11 +122,11 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.of(context)
                                 .pushNamed(AppRoutes.registerRoute);
                           },
-                          child: const Text('Don\'t have an account? Register'),
+                          child: Text(tr.text('noAccountRegister')),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Or using other method',
+                          tr.text('otherMethod'),
                           style:
                               Theme.of(context).textTheme.labelLarge!.copyWith(
                                     color: Theme.of(context)
@@ -153,9 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.of(context).pushNamed(AppRoutes.home);
                             } else if (state is GoogleAuthError) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(state.message),
-                                ),
+                                SnackBar(content: Text(state.message)),
                               );
                             }
                           },
@@ -165,12 +155,10 @@ class _LoginPageState extends State<LoginPage> {
                               current is GoogleAuthDone,
                           builder: (context, state) {
                             if (state is GoogleAuthenticating) {
-                              return SocialMediaBotton(
-                                isLoading: true,
-                              );
+                              return SocialMediaBotton(isLoading: true);
                             }
                             return SocialMediaBotton(
-                              text: "Login with Google",
+                              text: tr.text('loginWithGoogle'),
                               icon: Icons.g_mobiledata,
                               ontap: () async {
                                 await cubit.signInWithGoogle();

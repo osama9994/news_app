@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
@@ -20,11 +21,12 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = context.tr;
     final List<Widget> imageSliders = widget.articles.map((article) {
       final parsedDate = DateTime.parse(
         article.publishedAt ?? DateTime.now().toString(),
       );
-      final publishedDate = DateFormat.yMMMd().format(parsedDate);
+      final publishedDate = DateFormat.yMMMd(tr.localeCode).format(parsedDate);
       return InkWell(
         onTap:() => Navigator.pushNamed(context,AppRoutes.articleDetails ,arguments: article),
         child: ClipRRect(
@@ -81,7 +83,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${article.source?.name ?? ''} . $publishedDate",
+                        "${article.source?.name ?? tr.language.fallbackSourceName} . $publishedDate",
                         style: TextStyle(
                           color: Colors.white,
                           //fontSize: 16.0,

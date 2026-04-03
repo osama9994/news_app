@@ -1,106 +1,9 @@
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:news_app/core/views/widgets/article_widget_item.dart';
-// import 'package:news_app/features/search/search_cubit/search_cubit.dart';
-
-
-// class SearchPage extends StatefulWidget {
-//   const SearchPage({super.key});
-
-//   @override
-//   State<SearchPage> createState() => _SearchPageState();
-// }
-
-// class _SearchPageState extends State<SearchPage> {
-//   final TextEditingController _searchController=TextEditingController();
-//   @override
-//   Widget build(BuildContext context) {
-//     final searchCubit=BlocProvider.of<SearchCubit>(context);
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Search"),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 16),
-//         child: Column(
-//           children: [
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: _searchController,
-//               decoration:  InputDecoration(
-//                 hintText: "Search by title",
-//                 prefixIcon: const Icon(Icons.search),
-//                 suffixIcon: BlocBuilder<SearchCubit, SearchState>(
-//                   bloc: searchCubit,
-//                   buildWhen: (previous, current) =>
-//                     current is Searching ||
-//                     current is SearchResultsLoaded ||
-//                     current is SearchResultError,
-//                   builder: (context, state) {
-//                     if(state is Searching){
-//                       return TextButton(
-//                       onPressed: null,
-//                       child: const Text("Search"),
-//                     );
-//                     }
-//                     return TextButton(
-//                       onPressed: () async => await searchCubit.search(_searchController.text),
-//                       child: const Text("Search"),
-//                     );
-//                   },
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             Expanded(
-//               child: BlocBuilder<SearchCubit, SearchState>(
-//                 bloc: searchCubit,
-//                 buildWhen: (previous, current) =>
-//                  current is Searching||
-//                 current is SearchResultsLoaded||
-//                 current is SearchResultError,
-//                 builder: (context, state) {
-//                   if(state is Searching){
-//                    return const Center(
-//                                 child: CircularProgressIndicator.adaptive(),
-//                               );
-//                   }
-//                 else if(state is SearchResultsLoaded){
-//                   final articles=state.articles;
-//                   if(articles.isEmpty){
-//                     return const Center(
-//                       child: Text("No articles found"),
-//                     );
-              
-//                   }else{
-//                      return ListView.separated(
-//                       itemCount: articles.length,
-//                       itemBuilder: (_, index) {
-//                         final article=articles[index];
-//                          return ArticleWidgetItem(article: article,isSmaller: true,);
-
-//                       }, separatorBuilder: (BuildContext context, int index)=>const SizedBox( height: 16,),
-//                       );
-              
-//                   }
-//                   }
-//                   else {
-//                     return Center(child: Text("Search for articles"),);
-//                   }
-              
-//                 },
-//               ),
-//             ),
-        
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/localization/app_strings.dart';
+import 'package:news_app/core/localization/language_cubit/language_cubit.dart';
+import 'package:news_app/core/localization/language_cubit/language_state.dart';
+import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/article_widget_item.dart';
 import 'package:news_app/core/views/widgets/empty_state_widget.dart';
@@ -116,7 +19,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'All';
+  String _selectedCategory = 'all';
 
   @override
   void dispose() {
@@ -126,9 +29,10 @@ class _SearchPageState extends State<SearchPage> {
 
   void _doSearch(BuildContext context) {
     final text = _searchController.text.trim();
+    final tr = context.tr;
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a search term")),
+        SnackBar(content: Text(tr.text('pleaseEnterSearchTerm'))),
       );
       return;
     }
@@ -138,31 +42,116 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final searchCubit = BlocProvider.of<SearchCubit>(context);
+    final tr = context.tr;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Search"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
+    return BlocListener<LanguageCubit, LanguageState>(
+      listener: (context, state) {
+        if (_searchController.text.trim().isNotEmpty) {
+          searchCubit.search(_searchController.text.trim());
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(tr.text('search')),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              TextField(
+                controller: _searchController,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) {
+                  if (value.trim().isEmpty) return;
+                  searchCubit.search(value.trim());
+                },
+                decoration: InputDecoration(
+                  hintText: tr.text('searchForNews'),
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: BlocBuilder<SearchCubit, SearchState>(
+                    bloc: searchCubit,
+                    buildWhen: (_, current) =>
+                        current is Searching ||
+                        current is SearchResultsLoaded ||
+                        current is SearchResultError,
+                    builder: (context, state) {
+                      if (state is Searching) {
+                        return const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Icon(Icons.arrow_forward_rounded),
+                          ),
+                        );
+                      }
+                      return IconButton(
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        onPressed: () => _doSearch(context),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                tr.text('filterByCategory'),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 40,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: SearchCubit.categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final category = SearchCubit.categories[index];
+                    final isSelected = _selectedCategory == category;
 
-            // ── Search Field ──
-            TextField(
-              controller: _searchController,
-              textInputAction: TextInputAction.search,
-              onSubmitted: (value) {
-                if (value.trim().isEmpty) return;
-                searchCubit.search(value.trim());
-              },
-              decoration: InputDecoration(
-                hintText: "Search for news...",
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: BlocBuilder<SearchCubit, SearchState>(
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => _selectedCategory = category);
+                        searchCubit.selectCategory(category);
+                        if (_searchController.text.trim().isNotEmpty) {
+                          searchCubit.search(_searchController.text.trim());
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected ? AppColors.primary : AppColors.grey2,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          tr.category(category),
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black87,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: BlocBuilder<SearchCubit, SearchState>(
                   bloc: searchCubit,
                   buildWhen: (_, current) =>
                       current is Searching ||
@@ -170,256 +159,104 @@ class _SearchPageState extends State<SearchPage> {
                       current is SearchResultError,
                   builder: (context, state) {
                     if (state is Searching) {
-                      return const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Icon(Icons.arrow_forward_rounded),
+                      return InterestsShimmer();
+                    }
+
+                    if (state is SearchResultsLoaded) {
+                      final articles = state.articles;
+
+                      if (articles.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                tr.text('noArticlesFound'),
+                                style: const TextStyle(color: Colors.grey),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton.icon(
+                                onPressed: () => _doSearch(context),
+                                icon: const Icon(Icons.refresh),
+                                label: Text(tr.text('retrySearch')),
+                              ),
+                              const SizedBox(height: 12),
+                              TextButton(
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.favorites,
+                                ),
+                                child: Text(
+                                  tr.text('goToOfflineFavorites'),
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return ListView.separated(
+                        itemCount: articles.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemBuilder: (_, index) => ArticleWidgetItem(
+                          article: articles[index],
+                          isSmaller: true,
                         ),
                       );
                     }
-                    return IconButton(
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                      onPressed: () => _doSearch(context),
+
+                    if (state is SearchResultError) {
+                      return EmptyStateWidget(
+                        icon: Icons.search_off,
+                        title: tr.text('noArticlesFound'),
+                        buttonText: tr.text('retrySearch'),
+                        onButtonPressed: () => _doSearch(context),
+                        extraButton: TextButton(
+                          onPressed: () =>
+                              Navigator.pushNamed(context, AppRoutes.favorites),
+                          child: Text(
+                            tr.text('goToFavorites'),
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.newspaper_outlined,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            tr.text('searchAnyNewsTopic'),
+                            style: const TextStyle(color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
               ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ── Category Chips ──
-            const Text(
-              "Filter by category",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 40,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: SearchCubit.categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final category = SearchCubit.categories[index];
-                  final isSelected = _selectedCategory == category;
-
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() => _selectedCategory = category);
-                      searchCubit.selectCategory(category);
-                      // ✅ إذا في نص ابحث مباشرة
-                      if (_searchController.text.trim().isNotEmpty) {
-                        searchCubit.search(_searchController.text.trim());
-                      }
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.grey2,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black87,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ── Results ──
-            // Expanded(
-            //   child: BlocBuilder<SearchCubit, SearchState>(
-            //     bloc: searchCubit,
-            //     buildWhen: (_, current) =>
-            //         current is Searching ||
-            //         current is SearchResultsLoaded ||
-            //         current is SearchResultError,
-            //     builder: (context, state) {
-            //       if (state is Searching) {
-            //         return InterestsShimmer();
-            //       }
-
-            //       if (state is SearchResultsLoaded) {
-            //         final articles = state.articles;
-            //         if (articles.isEmpty) {
-            //           return const Center(
-            //             child: Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 Icon(Icons.search_off,
-            //                     size: 64, color: Colors.grey),
-            //                 SizedBox(height: 12),
-            //                 Text(
-            //                   "No articles found",
-            //                   style: TextStyle(color: Colors.grey),
-            //                 ),
-            //               ],
-            //             ),
-            //           );
-            //         }
-
-            //         return ListView.separated(
-            //           itemCount: articles.length,
-            //           separatorBuilder: (_, __) =>
-            //               const SizedBox(height: 16),
-            //           itemBuilder: (_, index) => ArticleWidgetItem(
-            //             article: articles[index],
-            //             isSmaller: true,
-            //           ),
-            //         );
-            //       }
-
-            //       if (state is SearchResultError) {
-            //         return Center(
-            //           child: Column(
-            //             mainAxisAlignment: MainAxisAlignment.center,
-            //             children: [
-            //               const Icon(Icons.error_outline,
-            //                   size: 48, color: Colors.red),
-            //               const SizedBox(height: 12),
-            //               Text(state.message,
-            //                   textAlign: TextAlign.center,
-            //                   style: const TextStyle(color: Colors.grey)),
-            //             ],
-            //           ),
-            //         );
-            //       }
-
-            //       // ── Initial State ──
-            //       return const Center(
-            //         child: Column(
-            //           mainAxisAlignment: MainAxisAlignment.center,
-            //           children: [
-            //             Icon(Icons.newspaper_outlined,
-            //                 size: 64, color: Colors.grey),
-            //             SizedBox(height: 12),
-            //             Text(
-            //               "Search for any news topic",
-            //               style: TextStyle(color: Colors.grey),
-            //             ),
-            //           ],
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
-            Expanded(
-  child: BlocBuilder<SearchCubit, SearchState>(
-    bloc: searchCubit,
-    buildWhen: (_, current) =>
-        current is Searching ||
-        current is SearchResultsLoaded ||
-        current is SearchResultError,
-    builder: (context, state) {
-      if (state is Searching) {
-        return InterestsShimmer();
-      }
-
-      // ✅ نتائج البحث Loaded
-      if (state is SearchResultsLoaded) {
-        final articles = state.articles;
-
-        if (articles.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                const SizedBox(height: 12),
-                const Text(
-                  "No articles found",
-                  style: TextStyle(color: Colors.grey),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () => _doSearch(context),
-                  icon: const Icon(Icons.refresh),
-                  label: const Text("Retry Search"),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/favorites'),
-                  child: const Text(
-                    "Go to Offline Favorites",
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        // ── عرض المقالات
-        return ListView.separated(
-          itemCount: articles.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
-          itemBuilder: (_, index) => ArticleWidgetItem(
-            article: articles[index],
-            isSmaller: true,
+            ],
           ),
-        );
-      }
-
-      // ✅ خطأ أو Offline
-      if (state is SearchResultError) {
-      return EmptyStateWidget(
-    icon: Icons.search_off,
-    title: "No articles found",
-    buttonText: "Retry Search",
-    onButtonPressed: () => _doSearch(context),
-    extraButton: TextButton(
-      onPressed: () => Navigator.pushNamed(context, '/favorites'),
-      child: const Text("Go to Favorites", style: TextStyle(decoration: TextDecoration.underline)),
-    ),
-  );
-      }
-
-      // ── الحالة الأولية
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.newspaper_outlined, size: 64, color: Colors.grey),
-            SizedBox(height: 12),
-            Text(
-              "Search for any news topic",
-              style: TextStyle(color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-    },
-  ),
-),
-          ],
         ),
       ),
     );

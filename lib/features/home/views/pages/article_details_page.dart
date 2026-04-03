@@ -2,13 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ArticleDetailsPage extends StatelessWidget {
   final Article article;
@@ -24,10 +25,11 @@ class ArticleDetailsPage extends StatelessWidget {
   Future<void> _readMore(BuildContext context) async {
     final rawUrl = (article.url ?? '').trim();
     final uri = Uri.tryParse(rawUrl);
+    final tr = context.tr;
 
     if (rawUrl.isEmpty || uri == null || !uri.hasScheme) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No article link available.")),
+        SnackBar(content: Text(tr.text('noArticleLinkAvailable'))),
       );
       return;
     }
@@ -35,7 +37,7 @@ class ArticleDetailsPage extends StatelessWidget {
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Couldn't open the article link.")),
+        SnackBar(content: Text(tr.text('couldNotOpenArticleLink'))),
       );
     }
   }
@@ -45,11 +47,12 @@ class ArticleDetailsPage extends StatelessWidget {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     final size = MediaQuery.sizeOf(context);
+    final tr = context.tr;
 
     final parsedDate = DateTime.parse(
       article.publishedAt ?? DateTime.now().toString(),
     );
-    final formatedDate = DateFormat.yMMMd().format(parsedDate);
+    final formattedDate = DateFormat.yMMMd(tr.localeCode).format(parsedDate);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -72,9 +75,7 @@ class ArticleDetailsPage extends StatelessWidget {
                 end: Alignment.center,
                 begin: Alignment.bottomCenter,
                 colors: [
-                  isDarkMode
-                      ? Colors.black.withOpacity(0.8)
-                      :Colors.black.withOpacity(0.8),
+                  Colors.black.withOpacity(0.8),
                   Colors.black.withOpacity(0.2),
                 ],
               ),
@@ -94,17 +95,16 @@ class ArticleDetailsPage extends StatelessWidget {
                     iconData: Icons.arrow_back_outlined,
                     hasPaddingBewteen: true,
                     color: Colors.white,
-                    backgroundColor: Colors.black.withOpacity(0.35)
+                    backgroundColor: Colors.black.withOpacity(0.35),
                   ),
                   Row(
                     children: [
-                      // ✅ زر المشاركة يعمل الآن
                       AppBarButton(
                         onTap: _shareArticle,
                         iconData: Icons.share,
                         hasPaddingBewteen: true,
                         color: Colors.white,
-                        backgroundColor:  Colors.black.withOpacity(0.35),
+                        backgroundColor: Colors.black.withOpacity(0.35),
                       ),
                       const SizedBox(width: 12),
                       BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
@@ -118,7 +118,7 @@ class ArticleDetailsPage extends StatelessWidget {
                                 : Icons.favorite_border_outlined,
                             hasPaddingBewteen: true,
                             color: isFav ? Colors.red : Colors.white,
-                            backgroundColor:  Colors.black.withOpacity(0.35),
+                            backgroundColor: Colors.black.withOpacity(0.35),
                           );
                         },
                       ),
@@ -146,10 +146,11 @@ class ArticleDetailsPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "General",
+                            tr.text('general'),
                             style: theme.textTheme.bodyLarge!.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -165,7 +166,7 @@ class ArticleDetailsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "${article.isBreaking ? ' Breaking' : ' Trending'} . $formatedDate",
+                        "${tr.articleStateLabel(article.isBreaking)} . $formattedDate",
                         style: theme.textTheme.labelLarge!
                             .copyWith(color: Colors.white70),
                       ),
@@ -178,7 +179,8 @@ class ArticleDetailsPage extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(36)),
+                        top: Radius.circular(36),
+                      ),
                       color: theme.cardColor,
                     ),
                     child: Padding(
@@ -192,12 +194,14 @@ class ArticleDetailsPage extends StatelessWidget {
                                 CircleAvatar(
                                   radius: 20,
                                   backgroundImage: CachedNetworkImageProvider(
-                                      article.urlToImage ?? ""),
+                                    article.urlToImage ?? "",
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    article.source?.name ?? "UNKNOWN",
+                                    article.source?.name ??
+                                        tr.language.fallbackSourceName,
                                     style: theme.textTheme.headlineSmall!
                                         .copyWith(fontWeight: FontWeight.bold),
                                   ),
@@ -215,20 +219,12 @@ class ArticleDetailsPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            // ✅ زر المشاركة في الأسفل
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: _shareArticle,
                                 icon: const Icon(Icons.share_rounded),
-                                label: const Text("Share Article"),
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
+                                label: Text(tr.text('shareArticle')),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -237,14 +233,7 @@ class ArticleDetailsPage extends StatelessWidget {
                               child: ElevatedButton.icon(
                                 onPressed: () => _readMore(context),
                                 icon: const Icon(Icons.open_in_new_rounded),
-                                label: const Text("Read more"),
-                                style: ElevatedButton.styleFrom(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
+                                label: Text(tr.text('readMore')),
                               ),
                             ),
                           ],

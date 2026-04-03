@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 
@@ -17,14 +18,14 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
   List<String> _selected = [];
 
   final List<Map<String, dynamic>> _categories = [
-    {'id': 'sports',        'label': 'Sports',        'icon': '🏅', 'color': Color(0xFFFF6B6B)},
-    {'id': 'technology',    'label': 'Technology',    'icon': '💻', 'color': Color(0xFF4ECDC4)},
-    {'id': 'politics',      'label': 'Politics',      'icon': '🌍', 'color': Color(0xFF45B7D1)},
-    {'id': 'business',      'label': 'Business',      'icon': '💰', 'color': Color(0xFF96CEB4)},
-    {'id': 'entertainment', 'label': 'Entertainment', 'icon': '🎬', 'color': Color(0xFFFFD93D)},
-    {'id': 'science',       'label': 'Science',       'icon': '🔬', 'color': Color(0xFFDDA0DD)},
-    {'id': 'health',        'label': 'Health',        'icon': '❤️', 'color': Color(0xFFFF8B94)},
-    {'id': 'general',       'label': 'General',       'icon': '📰', 'color': Color(0xFFB5EAD7)},
+    {'id': 'sports', 'icon': '🏅', 'color': Color(0xFFFF6B6B)},
+    {'id': 'technology', 'icon': '💻', 'color': Color(0xFF4ECDC4)},
+    {'id': 'politics', 'icon': '🏛', 'color': Color(0xFF45B7D1)},
+    {'id': 'business', 'icon': '💰', 'color': Color(0xFF96CEB4)},
+    {'id': 'entertainment', 'icon': '🎬', 'color': Color(0xFFFFD93D)},
+    {'id': 'science', 'icon': '🔬', 'color': Color(0xFFDDA0DD)},
+    {'id': 'health', 'icon': '❤', 'color': Color(0xFFFF8B94)},
+    {'id': 'general', 'icon': '📰', 'color': Color(0xFFB5EAD7)},
   ];
 
   @override
@@ -33,7 +34,6 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
     _loadSavedCategories();
   }
 
-  // ✅ تحميل الفئات المحفوظة من Hive
   void _loadSavedCategories() {
     final box = Hive.box(AppConstants.localDatabaseBox);
     final saved = box.get('favoriteCategories');
@@ -52,11 +52,13 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
-  final theme = Theme.of(context);
+    final theme = Theme.of(context);
+    final tr = context.tr;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Edit Interests',
+          tr.text('editInterests'),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -73,14 +75,13 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header ──
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Update your interests",
+                  tr.text('updateYourInterests'),
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -89,7 +90,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "Choose the topics you want to follow.",
+                  tr.text('chooseTopicsFollow'),
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     color: AppColors.grey,
@@ -98,10 +99,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
               ],
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // ── Grid ──
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,7 +117,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                   final isSelected = _selected.contains(cat['id']);
                   return _CategoryTile(
                     icon: cat['icon'],
-                    label: cat['label'],
+                    label: tr.category(cat['id']),
                     color: cat['color'],
                     isSelected: isSelected,
                     onTap: () => _toggle(cat['id']),
@@ -128,13 +126,10 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
               ),
             ),
           ),
-
-          // ── Bottom ──
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: Column(
               children: [
-                // Counter
                 AnimatedOpacity(
                   opacity: _selected.isNotEmpty ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 200),
@@ -143,11 +138,14 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_rounded,
-                            size: 16, color: AppColors.primary),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          size: 16,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(width: 6),
                         Text(
-                          "${_selected.length} topic${_selected.length > 1 ? 's' : ''} selected",
+                          tr.topicCount(_selected.length),
                           style: GoogleFonts.poppins(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
@@ -158,8 +156,6 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                     ),
                   ),
                 ),
-
-                // Save Button
                 BlocConsumer<AuthCubit, AuthState>(
                   listenWhen: (_, c) =>
                       c is CategoriesSaved || c is CategoriesError,
@@ -167,24 +163,11 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                     if (state is CategoriesSaved) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(Icons.check_circle, color: Colors.white),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Interests updated successfully!",
-                                style: GoogleFonts.poppins(),
-                              ),
-                            ],
-                          ),
+                          content: Text(tr.text('interestsUpdatedSuccess')),
                           backgroundColor: Colors.green,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                         ),
                       );
-                      Navigator.pop(context); // ✅ ارجع للـ Profile
+                      Navigator.pop(context);
                     } else if (state is CategoriesError) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(state.message)),
@@ -224,7 +207,7 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
                                 ),
                               )
                             : Text(
-                                "Save Changes",
+                                tr.text('saveChanges'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -244,7 +227,6 @@ class _EditCategoriesPageState extends State<EditCategoriesPage> {
   }
 }
 
-// ── Category Tile ──
 class _CategoryTile extends StatelessWidget {
   final String icon;
   final String label;
@@ -268,21 +250,12 @@ class _CategoryTile extends StatelessWidget {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          // ignore: deprecated_member_use
           color: isSelected ? color : color.withOpacity(0.12),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isSelected ? color : Colors.transparent,
             width: 2,
           ),
-          boxShadow: isSelected
-              ? [BoxShadow(
-                  // ignore: deprecated_member_use
-                  color: color.withOpacity(0.35),
-                  blurRadius: 14,
-                  offset: const Offset(0, 5),
-                )]
-              : [],
         ),
         child: Stack(
           children: [

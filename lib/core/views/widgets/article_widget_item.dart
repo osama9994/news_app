@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
@@ -22,10 +23,11 @@ class ArticleWidgetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tr = context.tr;
     final parsedDate = DateTime.tryParse(
             article.publishedAt ?? DateTime.now().toIso8601String()) ??
         DateTime.now();
-    final formattedDate = DateFormat.yMMMd().format(parsedDate);
+    final formattedDate = DateFormat.yMMMd(tr.localeCode).format(parsedDate);
 
     return InkWell(
       onTap: () => Navigator.pushNamed(context, AppRoutes.articleDetails,
@@ -104,7 +106,7 @@ class ArticleWidgetItem extends StatelessWidget {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                Text(article.source?.name ?? "",
+                Text(article.source?.name ?? tr.language.fallbackSourceName,
                     style: Theme.of(context).textTheme.labelLarge),
               ],
             ),

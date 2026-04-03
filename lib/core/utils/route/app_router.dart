@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
 import 'package:news_app/features/categories/views/pages/category_selection_page.dart';
@@ -59,7 +60,11 @@ class AppRouter {
         if (category == null) {
           return CupertinoPageRoute(
             builder: (_) => Scaffold(
-              body: Center(child: Text("no category data provided")),
+              body: Builder(
+                builder: (context) => Center(
+                  child: Text(context.tr.text('noCategoryData')),
+                ),
+              ),
             ),
             settings: settings,
           );
@@ -73,7 +78,11 @@ class AppRouter {
         if (article == null) {
           return CupertinoPageRoute(
             builder: (_) => Scaffold(
-              body: Center(child: Text("no article data provided")),
+              body: Builder(
+                builder: (context) => Center(
+                  child: Text(context.tr.text('noArticleData')),
+                ),
+              ),
             ),
             settings: settings,
           );
@@ -133,8 +142,14 @@ case AppRoutes.myInterests:
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(
-            body: Center(
-              child: Text("No route defined for ${settings.name}"),
+            body: Builder(
+              builder: (context) => Center(
+                child: Text(
+                  context.tr
+                      .text('noRouteDefined')
+                      .replaceFirst('{route}', settings.name ?? ''),
+                ),
+              ),
             ),
           ),
         );

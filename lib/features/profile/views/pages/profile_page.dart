@@ -1,15 +1,19 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/cubit/auth_cubit/auth_cubit.dart';
+import 'package:news_app/core/localization/app_strings.dart';
+import 'package:news_app/core/localization/language_cubit/language_cubit.dart';
 import 'package:news_app/core/utils/theme/theme_cubit/theme_cubit.dart';
+import 'package:news_app/features/home/home_cubit/home_cubit.dart';
 import 'package:news_app/features/profile/views/pages/edit_categories_page.dart';
+import 'package:news_app/features/profile/views/pages/change_password_page.dart';
 import 'package:news_app/features/profile/views/widgets/email_widget.dart';
 import 'package:news_app/features/profile/views/widgets/profile_action_button.dart';
 import 'package:news_app/features/profile/views/widgets/profile_picture_widget.dart';
 import 'package:news_app/features/profile/views/widgets/username_widget.dart';
-import 'change_password_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -33,22 +37,21 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final authCubit = context.read<AuthCubit>();
-    final themeCubit = context.read<ThemeCubit>(); // استدعاء الـ Cubit
+    final themeCubit = context.read<ThemeCubit>();
+    final languageCubit = context.read<LanguageCubit>();
     final user = FirebaseAuth.instance.currentUser;
-    final email = user?.email ?? "No email";
-
-    // التحقق إذا كان الوضع الحالي مظلم أم فاتح
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final email = user?.email ?? "";
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final tr = context.tr;
+    final currentLanguage = context.watch<LanguageCubit>().state.language;
 
     return Scaffold(
-      // جعل الخلفية تتغير تلقائياً حسب الثيم
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Profile"),
-        // سيأخذ اللون تلقائياً من AppBarTheme في AppTheme
+        title: Text(tr.text('profile')),
       ),
       body: user == null
-          ? const Center(child: Text("No user logged in"))
+          ? Center(child: Text(tr.text('noUserLoggedIn')))
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -68,14 +71,31 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         ProfileActionButton(
                           icon: isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                          text: isDarkMode ? "Light Mode" : "Dark Mode",
+                          text: isDarkMode
+                              ? tr.text('lightMode')
+                              : tr.text('darkMode'),
                           onTap: () => themeCubit.toggleTheme(),
                         ),
                         const SizedBox(height: 10),
-
+                        ProfileActionButton(
+                          icon: Icons.language,
+                          text: tr
+                              .text('editLanguage')
+                              .replaceFirst(
+                                '{language}',
+                                tr.languageName(currentLanguage),
+                              ),
+                          onTap: () async {
+                            await languageCubit.toggleLanguage();
+                            if (context.mounted) {
+                              await context.read<HomeCubit>().getHomeNews();
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
                         ProfileActionButton(
                           icon: Icons.category_rounded,
-                          text: "Edit Interests",
+                          text: tr.text('editInterests'),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -89,10 +109,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const SizedBox(height: 10),
-
                         ProfileActionButton(
                           icon: Icons.lock,
-                          text: "Change Password",
+                          text: tr.text('changePassword'),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -106,10 +125,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const SizedBox(height: 10),
-
                         ProfileActionButton(
                           icon: Icons.logout,
-                          text: "Log Out",
+                          text: tr.text('logOut'),
                           onTap: () => authCubit.logout(),
                         ),
                       ],

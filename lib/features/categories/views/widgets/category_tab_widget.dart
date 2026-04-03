@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/features/categories/category_cubit/category_cubit.dart';
 import 'package:news_app/features/categories/category_cubit/category_state.dart';
 import 'package:news_app/features/categories/views/widgets/interests_shimmer.dart';
@@ -12,6 +13,8 @@ class CategoryTabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tr = context.tr;
+
     return BlocProvider(
       create: (_) => CategoryCubit()..getCategoryNews(category),
       child: BlocBuilder<CategoryCubit, CategoryState>(
@@ -25,10 +28,10 @@ class CategoryTabWidget extends StatelessWidget {
 
           if (state is CategoryLoaded) {
             if (state.articles.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
-                  "No news available for this topic.",
-                  style: TextStyle(color: Colors.grey),
+                  tr.text('noNewsForTopic'),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               );
             }
@@ -62,7 +65,7 @@ class CategoryTabWidget extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () =>
                         context.read<CategoryCubit>().getCategoryNews(category),
-                    child: const Text("Try Again"),
+                    child: Text(tr.text('retry')),
                   ),
                 ],
               ),

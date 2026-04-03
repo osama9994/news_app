@@ -1,17 +1,17 @@
-
 import 'package:dio/dio.dart';
+import 'package:news_app/core/localization/language_storage.dart';
 import 'package:news_app/core/models/news_api_response.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 
 class HomeServices {
   final Dio aDio = Dio();
 
-  /// جلب الأخبار من API واحد
   Future<NewsApiResponse> getNews({
     required int page,
     required int pageSize,
   }) async {
     try {
+      final language = await LanguageStorage.loadLanguage();
       aDio.options.baseUrl = AppConstants.baseUrl;
 
       final headers = {
@@ -21,8 +21,8 @@ class HomeServices {
       final response = await aDio.get(
         AppConstants.everything,
         queryParameters: {
-          "q": "news",
-          "language": "en",
+          "q": language.homeQuery,
+          "language": language.newsApiLanguage,
           "sortBy": "publishedAt",
           "page": page,
           "pageSize": pageSize,
@@ -32,9 +32,8 @@ class HomeServices {
 
       if (response.statusCode == 200) {
         return NewsApiResponse.fromJson(response.data);
-      } else {
-        throw Exception(response.statusMessage);
       }
+      throw Exception(response.statusMessage);
     } catch (e) {
       rethrow;
     }

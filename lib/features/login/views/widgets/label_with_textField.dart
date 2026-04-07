@@ -82,7 +82,7 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceVariant;
+    final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceContainerHighest;
     final tr = context.tr;
 
     return Column(

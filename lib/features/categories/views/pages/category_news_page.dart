@@ -25,7 +25,7 @@ class CategoryNewsPage extends StatelessWidget {
       create: (_) => CategoryCubit()..getCategoryNews(category),
       child: BlocListener<LanguageCubit, LanguageState>(
         listener: (context, state) {
-          context.read<CategoryCubit>().getCategoryNews(category);
+          context.read<CategoryCubit>().applyCurrentLanguage();
         },
         child: Scaffold(
           appBar: AppBar(

@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
 
     return BlocListener<LanguageCubit, LanguageState>(
       listener: (context, state) {
-        context.read<HomeCubit>().getHomeNews();
+        context.read<HomeCubit>().applyCurrentLanguage();
       },
       child: Scaffold(
         key: _scaffoldKey,

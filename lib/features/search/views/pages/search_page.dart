@@ -46,9 +46,7 @@ class _SearchPageState extends State<SearchPage> {
 
     return BlocListener<LanguageCubit, LanguageState>(
       listener: (context, state) {
-        if (_searchController.text.trim().isNotEmpty) {
-          searchCubit.search(_searchController.text.trim());
-        }
+        searchCubit.applyCurrentLanguage();
       },
       child: Scaffold(
         appBar: AppBar(

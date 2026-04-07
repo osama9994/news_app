@@ -21,7 +21,7 @@ class RecommendationNewsAllPage extends StatelessWidget {
       create: (_) => ViewAllNewsCubit()..loadRecommendationNews(),
       child: BlocListener<LanguageCubit, LanguageState>(
         listener: (context, state) {
-          context.read<ViewAllNewsCubit>().loadRecommendationNews();
+          context.read<ViewAllNewsCubit>().applyCurrentLanguage();
         },
         child: Scaffold(
           appBar: AppBar(

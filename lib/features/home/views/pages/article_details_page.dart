@@ -1,29 +1,41 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+import 'package:news_app/core/localization/app_language.dart';
 import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
+import 'package:news_app/core/services/article_translation_service.dart';
 import 'package:news_app/core/utils/theme/app_colors.dart';
 import 'package:news_app/core/views/widgets/app_bar_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ArticleDetailsPage extends StatelessWidget {
+class ArticleDetailsPage extends StatefulWidget {
   final Article article;
   const ArticleDetailsPage({super.key, required this.article});
 
+  @override
+  State<ArticleDetailsPage> createState() => _ArticleDetailsPageState();
+}
+
+class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
+  String? _translatedDescription;
+  bool _isTranslating = false;
+  bool _hasTranslatedDescription = false;
+
   void _shareArticle() {
-    final title = article.title ?? '';
-    final url = article.url ?? '';
+    final title = widget.article.title ?? '';
+    final url = widget.article.url ?? '';
     final text = url.isNotEmpty ? '$title\n\n$url' : title;
     Share.share(text);
   }
 
   Future<void> _readMore(BuildContext context) async {
-    final rawUrl = (article.url ?? '').trim();
+    final rawUrl = (widget.article.url ?? '').trim();
     final uri = Uri.tryParse(rawUrl);
     final tr = context.tr;
 
@@ -42,12 +54,46 @@ class ArticleDetailsPage extends StatelessWidget {
     }
   }
 
+  Future<void> _translateDescriptionToArabic() async {
+    final description = widget.article.description?.trim() ?? '';
+    if (description.isEmpty || _isTranslating || _hasTranslatedDescription) {
+      return;
+    }
+
+    setState(() {
+      _isTranslating = true;
+    });
+
+    final translated = await ArticleTranslationService.instance.translateText(
+      description,
+      from: 'auto',
+      to: 'ar',
+    );
+
+    if (!mounted) return;
+
+    final hasTranslated = translated.trim().isNotEmpty && translated != description;
+
+    setState(() {
+      _translatedDescription = hasTranslated ? translated : null;
+      _hasTranslatedDescription = hasTranslated;
+      _isTranslating = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     final size = MediaQuery.sizeOf(context);
     final tr = context.tr;
+    final article = widget.article;
+    final isEnglishMode = tr.language == AppLanguage.english;
+    final hasDescription = (article.description ?? '').trim().isNotEmpty;
+    final descriptionText =
+        _hasTranslatedDescription && (_translatedDescription?.trim().isNotEmpty ?? false)
+        ? _translatedDescription!
+        : (article.description ?? '');
 
     final parsedDate = DateTime.parse(
       article.publishedAt ?? DateTime.now().toString(),
@@ -209,15 +255,63 @@ class ArticleDetailsPage extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 24),
+                            if (isEnglishMode && hasDescription) ...[
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: _isTranslating ||
+                                          _hasTranslatedDescription
+                                      ? null
+                                      : _translateDescriptionToArabic,
+                                  icon: _isTranslating
+                                      ? const SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Icon(
+                                          _hasTranslatedDescription
+                                              ? Icons.check_rounded
+                                              : Icons.translate_rounded,
+                                        ),
+                                  label: Text(
+                                    _isTranslating
+                                        ? tr.text('translating')
+                                        : _hasTranslatedDescription
+                                        ? tr.text('translatedToArabic')
+                                        : tr.text('translateToArabic'),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
                             Text(
-                              (article.description ?? "") +
-                                  (article.content ?? ""),
+                              descriptionText,
+                              textAlign: _hasTranslatedDescription
+                                  ? TextAlign.right
+                                  : TextAlign.start,
+                              textDirection: _hasTranslatedDescription
+                                  ? ui.TextDirection.rtl
+                                  : ui.TextDirection.ltr,
                               style: theme.textTheme.titleMedium!.copyWith(
                                 color: isDarkMode
                                     ? Colors.white70
                                     : AppColors.black,
                               ),
                             ),
+                            if ((article.content ?? '').trim().isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              Text(
+                                article.content ?? "",
+                                style: theme.textTheme.titleMedium!.copyWith(
+                                  color: isDarkMode
+                                      ? Colors.white70
+                                      : AppColors.black,
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: 24),
                             SizedBox(
                               width: double.infinity,

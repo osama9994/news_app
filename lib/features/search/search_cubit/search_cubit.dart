@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/core/localization/app_language.dart';
 import 'package:news_app/core/localization/language_storage.dart';
 import 'package:news_app/core/models/article_model.dart';
+import 'package:news_app/core/services/article_translation_service.dart';
 import 'package:news_app/features/search/models/search_body.dart';
 import 'package:news_app/features/search/services/search_services.dart';
 
@@ -12,6 +14,7 @@ class SearchCubit extends Cubit<SearchState> {
   final searchServices = SearchServices();
 
   String? selectedCategory;
+  List<Article> _rawArticles = [];
 
   static const List<String> categories = [
     'all',
@@ -35,17 +38,31 @@ class SearchCubit extends Cubit<SearchState> {
     emit(Searching());
     try {
       final language = await LanguageStorage.loadLanguage();
+      final translatedKeyword = await ArticleTranslationService.instance
+          .translateQueryToEnglish(keyWord, language);
       final query = selectedCategory != null
-          ? '$keyWord ${language.apiCategoryQuery(selectedCategory!)}'
-          : keyWord;
+          ? '$translatedKeyword ${AppLanguage.english.apiCategoryQuery(selectedCategory!)}'
+          : translatedKeyword;
 
       final body = SearchBody(
         q: query,
-        language: language.newsApiLanguage,
+        language: 'en',
       );
 
       final response = await searchServices.search(body);
-      emit(SearchResultsLoaded(response.articles ?? []));
+      _rawArticles = response.articles ?? [];
+      await applyCurrentLanguage();
+    } catch (e) {
+      emit(SearchResultError(e.toString()));
+    }
+  }
+
+  Future<void> applyCurrentLanguage() async {
+    try {
+      final language = await LanguageStorage.loadLanguage();
+      final translatedArticles = await ArticleTranslationService.instance
+          .translateArticlesIfNeeded(_rawArticles, language);
+      emit(SearchResultsLoaded(translatedArticles));
     } catch (e) {
       emit(SearchResultError(e.toString()));
     }

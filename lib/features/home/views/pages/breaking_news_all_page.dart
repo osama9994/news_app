@@ -21,7 +21,7 @@ class BreakingNewsAllPage extends StatelessWidget {
       create: (_) => ViewAllNewsCubit()..loadBreakingNews(),
       child: BlocListener<LanguageCubit, LanguageState>(
         listener: (context, state) {
-          context.read<ViewAllNewsCubit>().loadBreakingNews();
+          context.read<ViewAllNewsCubit>().applyCurrentLanguage();
         },
         child: Scaffold(
           appBar: AppBar(

@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/core/localization/language_storage.dart';
 import 'package:news_app/core/models/article_model.dart';
-import 'package:news_app/core/services/article_translation_service.dart';
 import 'package:news_app/core/services/local_database_hive.dart';
 import 'package:news_app/core/utils/app_constants.dart';
 import 'package:news_app/features/home/services/home_services.dart';
@@ -39,9 +37,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> _emitFromRawArticles() async {
-    final language = await LanguageStorage.loadLanguage();
-    final articles = await ArticleTranslationService.instance
-        .translateArticlesIfNeeded(_rawHomeArticles, language);
+    final articles = List<Article>.from(_rawHomeArticles);
 
     final breakingNews =
         articles.take(7).map((a) => a.copyWith(isBreaking: true)).toList();

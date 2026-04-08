@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/core/localization/app_language.dart';
-import 'package:news_app/core/localization/language_storage.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/services/article_translation_service.dart';
 import 'package:news_app/features/search/models/search_body.dart';
@@ -37,9 +36,13 @@ class SearchCubit extends Cubit<SearchState> {
 
     emit(Searching());
     try {
-      final language = await LanguageStorage.loadLanguage();
-      final translatedKeyword = await ArticleTranslationService.instance
-          .translateQueryToEnglish(keyWord, language);
+      final hasArabicLetters = RegExp(r'[\u0600-\u06FF]').hasMatch(keyWord);
+      final translatedKeyword = hasArabicLetters
+          ? await ArticleTranslationService.instance.translateText(
+              keyWord,
+              to: 'en',
+            )
+          : keyWord;
       final query = selectedCategory != null
           ? '$translatedKeyword ${AppLanguage.english.apiCategoryQuery(selectedCategory!)}'
           : translatedKeyword;
@@ -59,10 +62,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   Future<void> applyCurrentLanguage() async {
     try {
-      final language = await LanguageStorage.loadLanguage();
-      final translatedArticles = await ArticleTranslationService.instance
-          .translateArticlesIfNeeded(_rawArticles, language);
-      emit(SearchResultsLoaded(translatedArticles));
+      emit(SearchResultsLoaded(List<Article>.from(_rawArticles)));
     } catch (e) {
       emit(SearchResultError(e.toString()));
     }

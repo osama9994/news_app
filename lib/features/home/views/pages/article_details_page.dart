@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
 import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
-import 'package:news_app/core/localization/app_language.dart';
 import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/services/article_translation_service.dart';
@@ -88,7 +87,6 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     final size = MediaQuery.sizeOf(context);
     final tr = context.tr;
     final article = widget.article;
-    final isEnglishMode = tr.language == AppLanguage.english;
     final hasDescription = (article.description ?? '').trim().isNotEmpty;
     final descriptionText =
         _hasTranslatedDescription && (_translatedDescription?.trim().isNotEmpty ?? false)
@@ -255,7 +253,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                               ],
                             ),
                             const SizedBox(height: 24),
-                            if (isEnglishMode && hasDescription) ...[
+                            if (hasDescription) ...[
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton.icon(

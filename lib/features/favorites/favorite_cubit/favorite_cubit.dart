@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
-import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+import 'package:news_app/core/cubit/favorite_actions/favorite_actions_cubit.dart';
+import 'package:news_app/core/cubit/favorite_actions/favorite_actions_state.dart';
 import 'favorite_state.dart';
 import 'dart:async';
 

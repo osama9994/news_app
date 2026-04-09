@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_cubit.dart';
-import 'package:news_app/core/cubit/favorite%20actions/favorite_actions_state.dart';
+import 'package:news_app/core/cubit/favorite_actions/favorite_actions_cubit.dart';
+import 'package:news_app/core/cubit/favorite_actions/favorite_actions_state.dart';
 import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/models/article_model.dart';
 import 'package:news_app/core/services/article_translation_service.dart';
@@ -119,8 +119,8 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                 end: Alignment.center,
                 begin: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.8),
-                  Colors.black.withOpacity(0.2),
+                  Colors.black.withAlpha(8),
+                  Colors.black.withAlpha(55),
                 ],
               ),
             ),
@@ -139,7 +139,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                     iconData: Icons.arrow_back_outlined,
                     hasPaddingBewteen: true,
                     color: Colors.white,
-                    backgroundColor: Colors.black.withOpacity(0.35),
+                    backgroundColor: Colors.black.withAlpha(70),
                   ),
                   Row(
                     children: [
@@ -148,7 +148,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                         iconData: Icons.share,
                         hasPaddingBewteen: true,
                         color: Colors.white,
-                        backgroundColor: Colors.black.withOpacity(0.35),
+                        backgroundColor: Colors.black.withAlpha(70),
                       ),
                       const SizedBox(width: 12),
                       BlocBuilder<FavoriteActionsCubit, FavoriteActionsState>(
@@ -162,7 +162,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                                 : Icons.favorite_border_outlined,
                             hasPaddingBewteen: true,
                             color: isFav ? Colors.red : Colors.white,
-                            backgroundColor: Colors.black.withOpacity(0.35),
+                            backgroundColor: Colors.black.withAlpha(70),
                           );
                         },
                       ),

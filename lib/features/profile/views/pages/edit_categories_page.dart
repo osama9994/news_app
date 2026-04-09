@@ -250,7 +250,7 @@ class _CategoryTile extends StatelessWidget {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          color: isSelected ? color : color.withOpacity(0.12),
+          color: isSelected ? color : color.withAlpha(30),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isSelected ? color : Colors.transparent,

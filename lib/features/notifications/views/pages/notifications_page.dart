@@ -102,7 +102,7 @@ class NotificationsPage extends StatelessWidget {
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withAlpha(25),
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Icon(Icons.notifications_rounded, color: Colors.blue, size: 28),

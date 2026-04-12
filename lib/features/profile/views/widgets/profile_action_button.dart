@@ -1,5 +1,7 @@
+// 
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:news_app/core/utils/theme/app_colors.dart';
 
 class ProfileActionButton extends StatelessWidget {
   final IconData icon;
@@ -18,14 +20,19 @@ class ProfileActionButton extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: onTap,
       icon: Icon(icon, color: Colors.white),
-      label: Text(text,style:  GoogleFonts.inter(
-                color: Colors.white,
-                fontSize: 18,
-              ),),
+      label: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+      ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: AppColors.primary,
         minimumSize: const Size.fromHeight(50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }

@@ -1,34 +1,46 @@
 
-// ignore_for_file: file_names
+ // ignore_for_file: file_names
 
-import 'package:flutter/material.dart';
-import 'package:news_app/core/localization/app_strings.dart';
+// import 'package:flutter/material.dart';
+// import 'package:news_app/core/localization/app_strings.dart';
 
-class LabelWithTextField extends StatefulWidget {
-  final String label;
-  final TextEditingController controller;
-  final IconData prefixIcon;
-  final Widget? suffixIcon;
-  final String hintText;
-  final bool obsecureText;
+// class LabelWithTextField extends StatefulWidget {
+//   final String label;
+//   final TextEditingController controller;
+//   final IconData prefixIcon;
+//   final Widget? suffixIcon;
+//   final String hintText;
+//   final bool obsecureText;
 
-  const LabelWithTextField({
-    super.key,
-    required this.label,
-    required this.controller,
-    required this.prefixIcon,
-    required this.hintText,
-    this.suffixIcon,
-    this.obsecureText = false,
-  });
+//   const LabelWithTextField({
+//     super.key,
+//     required this.label,
+//     required this.controller,
+//     required this.prefixIcon,
+//     required this.hintText,
+//     this.suffixIcon,
+//     this.obsecureText = false,
+//   });
 
-  @override
-  State<LabelWithTextField> createState() => _LabelWithTextFieldState();
-}
-
+//   @override
+//   State<LabelWithTextField> createState() => _LabelWithTextFieldState();
+// }
 // class _LabelWithTextFieldState extends State<LabelWithTextField> {
+//   late bool _isObscure;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _isObscure = widget.obsecureText;
+//   }
+
 //   @override
 //   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     final cs = theme.colorScheme;
+//     final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceContainerHighest;
+//     final tr = context.tr;
+
 //     return Column(
 //       crossAxisAlignment: CrossAxisAlignment.start,
 //       children: [
@@ -42,25 +54,57 @@ class LabelWithTextField extends StatefulWidget {
 //         TextFormField(
 //           controller: widget.controller,
 //           validator: (value) => value == null || value.isEmpty
-//               ? '${widget.label} cannot be empty!'
+//               ? tr.fieldRequired(widget.label)
 //               : null,
-//           obscureText: widget.obsecureText,
+//           obscureText: _isObscure,
 //           decoration: InputDecoration(
 //             prefixIcon: Icon(widget.prefixIcon),
-//             prefixIconColor: AppColors.grey,
-//             suffixIcon: widget.suffixIcon,
-//             suffixIconColor: AppColors.grey,
+//             prefixIconColor: cs.onSurfaceVariant,
+
+//             // 👇 هنا الحل
+//             suffixIcon: widget.obsecureText
+//                 ? IconButton(
+//                     icon: Icon(
+//                       _isObscure
+//                           ? Icons.visibility_off
+//                           : Icons.visibility,
+//                     ),
+//                     onPressed: () {
+//                       setState(() {
+//                         _isObscure = !_isObscure;
+//                       });
+//                     },
+//                   )
+//                 : widget.suffixIcon,
+
+//             suffixIconColor: cs.onSurfaceVariant,
 //             hintText: widget.hintText,
-//             fillColor: AppColors.grey2,
+//             hintStyle: theme.textTheme.bodyMedium?.copyWith(
+//               color: cs.onSurfaceVariant,
+//             ),
+//             fillColor: fillColor,
 //             filled: true,
 //             border: OutlineInputBorder(
 //               borderRadius: BorderRadius.circular(16),
 //               borderSide: BorderSide.none,
 //             ),
+//             focusedBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(16),
+//               borderSide: BorderSide(
+//                 color: cs.primary,
+//                 width: 1.5,
+//               ),
+//             ),
 //             errorBorder: OutlineInputBorder(
 //               borderRadius: BorderRadius.circular(16),
-//               borderSide: const BorderSide(
-//                 color: AppColors.red,
+//               borderSide: BorderSide(
+//                 color: cs.error,
+//               ),
+//             ),
+//             focusedErrorBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(16),
+//               borderSide: BorderSide(
+//                 color: cs.error,
 //               ),
 //             ),
 //           ),
@@ -69,20 +113,48 @@ class LabelWithTextField extends StatefulWidget {
 //     );
 //   }
 // }
+
+
+import 'package:flutter/material.dart';
+import 'package:news_app/core/localization/app_strings.dart';
+
+class LabelWithTextField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  final IconData prefixIcon;
+  final Widget? suffixIcon;
+  final String hintText;
+  final bool obscureText;
+
+  const LabelWithTextField({
+    super.key,
+    required this.label,
+    required this.controller,
+    required this.prefixIcon,
+    required this.hintText,
+    this.suffixIcon,
+    this.obscureText = false,
+  });
+
+  @override
+  State<LabelWithTextField> createState() => _LabelWithTextFieldState();
+}
+
 class _LabelWithTextFieldState extends State<LabelWithTextField> {
   late bool _isObscure;
 
   @override
   void initState() {
     super.initState();
-    _isObscure = widget.obsecureText;
+    _isObscure = widget.obscureText;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final fillColor = theme.inputDecorationTheme.fillColor ?? cs.surfaceContainerHighest;
+    final theme     = Theme.of(context);
+    final cs        = theme.colorScheme;
+    final fillColor = theme.inputDecorationTheme.fillColor
+        ?? cs.surfaceContainerHighest;
     final tr = context.tr;
 
     return Column(
@@ -90,38 +162,30 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
       children: [
         Text(
           widget.label,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          style: theme.textTheme.titleMedium!.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: widget.controller,
+          obscureText: _isObscure,
           validator: (value) => value == null || value.isEmpty
               ? tr.fieldRequired(widget.label)
               : null,
-          obscureText: _isObscure,
           decoration: InputDecoration(
             prefixIcon: Icon(widget.prefixIcon),
             prefixIconColor: cs.onSurfaceVariant,
-
-            // 👇 هنا الحل
-            suffixIcon: widget.obsecureText
+            suffixIconColor: cs.onSurfaceVariant,
+            suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
-                      _isObscure
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscure = !_isObscure;
-                      });
-                    },
+                    onPressed: () =>
+                        setState(() => _isObscure = !_isObscure),
                   )
                 : widget.suffixIcon,
-
-            suffixIconColor: cs.onSurfaceVariant,
             hintText: widget.hintText,
             hintStyle: theme.textTheme.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
@@ -134,22 +198,15 @@ class _LabelWithTextFieldState extends State<LabelWithTextField> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.primary,
-                width: 1.5,
-              ),
+              borderSide: BorderSide(color: cs.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.error,
-              ),
+              borderSide: BorderSide(color: cs.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.error,
-              ),
+              borderSide: BorderSide(color: cs.error),
             ),
           ),
         ),

@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
+
+
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfilePictureWidget extends StatefulWidget {
+class ProfilePictureWidget extends StatelessWidget {
   final File? imageFile;
   final Function(File) onImagePicked;
 
@@ -12,18 +14,12 @@ class ProfilePictureWidget extends StatefulWidget {
     required this.onImagePicked,
   });
 
-  @override
-  State<ProfilePictureWidget> createState() => _ProfilePictureWidgetState();
-}
-
-class _ProfilePictureWidgetState extends State<ProfilePictureWidget> {
-  final ImagePicker _picker = ImagePicker();
-
   Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
-      widget.onImagePicked(File(pickedFile.path));
+      onImagePicked(File(pickedFile.path));
     }
   }
 
@@ -33,10 +29,11 @@ class _ProfilePictureWidgetState extends State<ProfilePictureWidget> {
       onTap: _pickImage,
       child: CircleAvatar(
         radius: 60,
-        backgroundImage: widget.imageFile != null
-            ? FileImage(widget.imageFile!)
-            : const NetworkImage('https://via.placeholder.com/150')
-                as ImageProvider,
+        backgroundColor: Colors.grey[300],
+        backgroundImage: imageFile != null ? FileImage(imageFile!) : null,
+        child: imageFile == null
+            ? const Icon(Icons.person, size: 60, color: Colors.white)
+            : null,
       ),
     );
   }

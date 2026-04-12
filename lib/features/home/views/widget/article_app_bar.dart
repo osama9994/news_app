@@ -55,7 +55,7 @@ class ArticleAppBar extends StatelessWidget {
         AppBarButton(
           onTap: onBack,
           iconData: Icons.arrow_back_outlined,
-          hasPaddingBewteen: true,
+          
           color: Colors.white,
           backgroundColor: Colors.black.withAlpha(70),
         ),
@@ -64,7 +64,7 @@ class ArticleAppBar extends StatelessWidget {
             AppBarButton(
               onTap: _share,
               iconData: Icons.share,
-              hasPaddingBewteen: true,
+              
               color: Colors.white,
               backgroundColor: Colors.black.withAlpha(70),
             ),
@@ -78,7 +78,7 @@ class ArticleAppBar extends StatelessWidget {
                   iconData: isFav
                       ? Icons.favorite_rounded
                       : Icons.favorite_border_outlined,
-                  hasPaddingBewteen: true,
+                  
                   color: isFav ? Colors.red : Colors.white,
                   backgroundColor: Colors.black.withAlpha(70),
                 );

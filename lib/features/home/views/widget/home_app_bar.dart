@@ -28,13 +28,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         AppBarButton(
           onTap: () => Navigator.pushNamed(context, AppRoutes.search),
           iconData: Icons.search,
-          hasPaddingBewteen: true,
+          
         ),
         const SizedBox(width: 12),
         AppBarButton(
           onTap: () => Navigator.pushNamed(context, AppRoutes.notifications),
           iconData: Icons.notifications_none_rounded,
-          hasPaddingBewteen: true,
+          
         ),
         const SizedBox(width: 12),
       ],

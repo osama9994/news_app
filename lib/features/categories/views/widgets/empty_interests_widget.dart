@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:news_app/core/localization/app_strings.dart';
 import 'package:news_app/core/utils/route/app_routes.dart';
@@ -8,6 +10,7 @@ class EmptyInterestsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final tr = context.tr;
 
     return Center(
@@ -18,8 +21,7 @@ class EmptyInterestsWidget extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             tr.text('emptyInterestsTitle'),
-            style: const TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -27,7 +29,9 @@ class EmptyInterestsWidget extends StatelessWidget {
           Text(
             tr.text('emptyInterestsSubtitle'),
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.grey),
+            style: theme.textTheme.bodyMedium!.copyWith(
+              color: Colors.grey,
+            ),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(

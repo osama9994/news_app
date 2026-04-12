@@ -37,7 +37,7 @@ class RecommendationNewsAllPage extends StatelessWidget {
               AppBarButton(
                 onTap: () => Navigator.pushNamed(context, AppRoutes.search),
                 iconData: Icons.search,
-                hasPaddingBewteen: true,
+                
               ),
               const SizedBox(width: 12),
             ],

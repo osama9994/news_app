@@ -1,4 +1,4 @@
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:news_app/core/models/article_model.dart';
@@ -8,6 +8,12 @@ import 'package:news_app/core/utils/app_constants.dart';
 class FavoritesServices {
   final localDatabaseHive = LocalDatabaseHive();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  String? _buildFavoriteDocId(Article article) {
+    final rawId = (article.url ?? article.title ?? '').trim();
+    if (rawId.isEmpty) return null;
+    return base64UrlEncode(utf8.encode(rawId));
+  }
 
   // =========================
   // GET FAVORITES FROM HIVE
@@ -43,8 +49,8 @@ class FavoritesServices {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final docId = article.title ?? article.url;
-    if (docId == null || docId.isEmpty) return;
+    final docId = _buildFavoriteDocId(article);
+    if (docId == null) return;
 
     await firestore
         .collection('users')
@@ -61,8 +67,8 @@ class FavoritesServices {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final docId = article.title ?? article.url;
-    if (docId == null || docId.isEmpty) return;
+    final docId = _buildFavoriteDocId(article);
+    if (docId == null) return;
 
     await firestore
         .collection('users')

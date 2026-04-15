@@ -9,18 +9,24 @@ class SearchServices {
       : _dio = Dio(
           BaseOptions(
             baseUrl: AppConstants.baseUrl,
-            headers: {
-              'Authorization': 'Bearer ${AppConstants.apiKey}',
-            },
           ),
         );
 
   final Dio _dio;
 
   Future<NewsApiResponse> search(SearchBody body) async {
+    if (AppConstants.apiKey.trim().isEmpty) {
+      throw Exception(
+        'Missing NEWS_API_KEY. Run with --dart-define=NEWS_API_KEY=your_key',
+      );
+    }
+
+    final query = body.toJson();
+    query['apiKey'] = AppConstants.apiKey;
+
     final response = await _dio.get(
       AppConstants.everything,
-      queryParameters: body.toJson(),
+      queryParameters: query,
     );
 
     if (response.statusCode == 200) {

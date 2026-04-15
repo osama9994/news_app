@@ -29,8 +29,10 @@ class ArticleAppBar extends StatelessWidget {
     final rawUrl = (article.url ?? '').trim();
     final uri = Uri.tryParse(rawUrl);
     final tr = context.tr;
+    final hasSafeScheme =
+        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
 
-    if (rawUrl.isEmpty || uri == null || !uri.hasScheme) {
+    if (rawUrl.isEmpty || !hasSafeScheme) {
       _showSnackBar(context, tr.text('noArticleLinkAvailable'));
       return;
     }

@@ -12,40 +12,48 @@ class CategoryCubit extends Cubit<CategoryState> {
   final Dio dio = Dio();
   List<Article> _rawArticles = [];
 
+  void _emitSafe(CategoryState state) {
+    if (!isClosed) {
+      emit(state);
+    }
+  }
+
   Future<void> getCategoryNews(String category) async {
     try {
-      emit(CategoryLoading());
+      if (AppConstants.apiKey.trim().isEmpty) {
+        throw Exception(
+          'Missing NEWS_API_KEY. Run with --dart-define=NEWS_API_KEY=your_key',
+        );
+      }
+
+      _emitSafe(CategoryLoading());
 
       dio.options.baseUrl = AppConstants.baseUrl;
 
       final response = await dio.get(
         AppConstants.everything,
         queryParameters: {
+          'apiKey': AppConstants.apiKey,
           'q': AppLanguage.english.apiCategoryQuery(category),
           'language': 'en',
           'sortBy': 'publishedAt',
           'pageSize': 20,
         },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${AppConstants.apiKey}',
-          },
-        ),
       );
 
       final parsed = NewsApiResponse.fromJson(response.data);
       _rawArticles = parsed.articles ?? [];
       await applyCurrentLanguage();
     } catch (e) {
-      emit(CategoryError(e.toString()));
+      _emitSafe(CategoryError(e.toString()));
     }
   }
 
   Future<void> applyCurrentLanguage() async {
     try {
-      emit(CategoryLoaded(List<Article>.from(_rawArticles)));
+      _emitSafe(CategoryLoaded(List<Article>.from(_rawArticles)));
     } catch (e) {
-      emit(CategoryError(e.toString()));
+      _emitSafe(CategoryError(e.toString()));
     }
   }
 }

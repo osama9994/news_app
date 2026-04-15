@@ -1,51 +1,16 @@
-// class UserData {
-//   final String id;
-//   // final String username;
-//   final String email;
-//   final DateTime createdAt;
-
-//   UserData({
-//     required this.id,
-//     // required this.username,
-//     required this.email,
-//     required this.createdAt,
-//   });
-
-//   Map<String, dynamic> toMap() {
-//     final result = <String, dynamic>{};
-  
-//     result.addAll({'id': id});
-//     // result.addAll({'username': username});
-//     result.addAll({'email': email});
-//     result.addAll({'createdAt': createdAt});
-  
-//     return result;
-//   }
-
-//   factory UserData.fromMap(Map<String, dynamic> map) {
-//     return UserData(
-//       id: map['id'] ?? '',
-//       // username: map['username'] ?? '',
-//       email: map['email'] ?? '',
-//       createdAt: map['createdAt'] ?? '',
-//     );
-//   }
-// }
 class UserData {
   final String id;
   final String email;
   final DateTime createdAt;
-  
-  // ✅ جديد
   final List<String> favoriteCategories;
   final String fcmToken;
-  final bool isOnboardingDone; // حتى لا نعرض شاشة الفئات مرة ثانية
+  final bool isOnboardingDone;
 
   UserData({
     required this.id,
     required this.email,
     required this.createdAt,
-    this.favoriteCategories = const [], // ✅ افتراضي فارغ
+    this.favoriteCategories = const [],
     this.fcmToken = '',
     this.isOnboardingDone = false,
   });
@@ -55,18 +20,29 @@ class UserData {
       'id': id,
       'email': email,
       'createdAt': createdAt,
-      'favoriteCategories': favoriteCategories, // ✅
-      'fcmToken': fcmToken,                     // ✅
-      'isOnboardingDone': isOnboardingDone,     // ✅
+      'favoriteCategories': favoriteCategories,
+      'fcmToken': fcmToken,
+      'isOnboardingDone': isOnboardingDone,
     };
+  }
+
+  static DateTime _parseCreatedAt(dynamic value) {
+    if (value is DateTime) return value;
+    if (value != null && value.runtimeType.toString() == 'Timestamp') {
+      return (value as dynamic).toDate() as DateTime;
+    }
+    if (value is String) {
+      return DateTime.tryParse(value) ?? DateTime.now();
+    }
+    return DateTime.now();
   }
 
   factory UserData.fromMap(Map<String, dynamic> map) {
     return UserData(
       id: map['id'] ?? '',
       email: map['email'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now(),
-      favoriteCategories: List<String>.from(map['favoriteCategories'] ?? []), // ✅
+      createdAt: _parseCreatedAt(map['createdAt']),
+      favoriteCategories: List<String>.from(map['favoriteCategories'] ?? []),
       fcmToken: map['fcmToken'] ?? '',
       isOnboardingDone: map['isOnboardingDone'] ?? false,
     );

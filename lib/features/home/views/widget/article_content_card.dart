@@ -95,13 +95,18 @@ class _SourceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = (article.urlToImage ?? '').trim();
+    final imageUri = Uri.tryParse(imageUrl);
+    final hasSafeImageUrl = imageUri != null &&
+        (imageUri.scheme == 'http' || imageUri.scheme == 'https');
+
     return Row(
       children: [
         CircleAvatar(
           radius: 20,
-          backgroundImage: CachedNetworkImageProvider(
-            article.urlToImage ?? '',
-          ),
+          backgroundImage:
+              hasSafeImageUrl ? CachedNetworkImageProvider(imageUrl) : null,
+          child: hasSafeImageUrl ? null : const Icon(Icons.newspaper_rounded),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -174,8 +179,10 @@ class _ActionButtons extends StatelessWidget {
     final rawUrl = (article.url ?? '').trim();
     final uri = Uri.tryParse(rawUrl);
     final tr = context.tr;
+    final hasSafeScheme =
+        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
 
-    if (rawUrl.isEmpty || uri == null || !uri.hasScheme) {
+    if (rawUrl.isEmpty || !hasSafeScheme) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(tr.text('noArticleLinkAvailable'))),
       );

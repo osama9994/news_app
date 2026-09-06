@@ -1,4 +1,4 @@
-# 📰 Flutter News App (Demo Version)
+# 📰 Flutter News App
 
 A modern, high-performance cross-platform news application built with Flutter that delivers real-time news updates from around the world. The app offers a clean and responsive UI/UX with user authentication, email verification, offline reading capabilities, multi-language support, automated engagement notifications, and powerful search features.
 
@@ -19,6 +19,7 @@ A modern, high-performance cross-platform news application built with Flutter th
 * 📤 **Social Sharing:** Share news articles effortlessly across platforms.
 * 🔔 **Firebase Push Notifications:** Instant updates using Firebase Cloud Messaging (FCM).
 * ⚡ **Performance Optimized:** Fast image caching and state management powered by `flutter_bloc`.
+* 🛡️ **DevOps & Secure CI/CD:** Automated testing, static code analysis, and release APK generation using GitHub Actions with encrypted secrets.
 
 ---
 
@@ -28,11 +29,22 @@ A modern, high-performance cross-platform news application built with Flutter th
 | :--- | :--- |
 | **Framework & Language** | Flutter, Dart |
 | **State Management** | BLoC / Cubit (`flutter_bloc`) |
-| **Backend & Authentication** | Firebase Authentication (Email Verification), Cloud Firestore |
-| **Notifications & Scheduling** | Firebase Cloud Messaging (FCM), Local Notifications / Scheduling |
+| **Backend & Authentication** | Firebase Authentication, Cloud Firestore |
+| **CI/CD & Automation** | GitHub Actions (Automated Linting, Testing, Release APK Build) |
+| **Notifications & Scheduling** | Firebase Cloud Messaging (FCM), Local Notifications |
 | **Local Storage** | Hive, Shared Preferences |
-| **Networking & API** | Dio, REST API (NewsAPI) |
-| **Other Packages** | Cached Network Image, Device Info, Localization |
+| **Networking & API** | Dio, Retrofit, REST API (NewsAPI) |
+| **Security & Secrets** | GitHub Secrets, Base64 Environment Variable Injection |
+
+---
+
+## ⚙️ DevOps & CI/CD Pipeline
+
+This project incorporates automated **Continuous Integration (CI)** and **Continuous Delivery (CD)** workflows via GitHub Actions:
+
+- **CI Workflow (`ci.yml`):** Runs static code analysis (`flutter analyze`), verifies dependencies, and executes unit/widget tests on every `push` or `pull_request` to the `main` branch.
+- **CD Workflow (`cd.yml`):** Automatically builds and exports signed production Release APKs when a release tag (e.g., `v1.0.0`) is published.
+- **Security First:** Sensitive configuration files (`.env`, `google-services.json`, `firebase_options.dart`) are excluded from version control and injected dynamically into runner environments using Base64-encoded GitHub Repository Secrets.
 
 ---
 
@@ -68,8 +80,9 @@ A modern, high-performance cross-platform news application built with Flutter th
 ## 🚀 Getting Started
 
 ### Prerequisites
-* [Flutter SDK](https://docs.flutter.dev/get-started/install) (Latest Stable Version)
+* [Flutter SDK](https://docs.flutter.dev/get-started/install) (Version 3.19.0 or higher)
 * An active API key from [NewsAPI.org](https://newsapi.org/)
+* Firebase project with Android configuration (`google-services.json`)
 
 ### Setup Instructions
 

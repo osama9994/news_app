@@ -1,0 +1,14 @@
+// {
+//     "java.configuration.updateBuildConfiguration": "automatic"
+// }
+{
+  "java.project.exclusion": [
+    "**/build/**",
+    "**/.plugin_symlinks/**",
+    "**/ephemeral/**"
+  ],
+  "files.exclude": {
+    "**/.plugin_symlinks": true
+  },
+  "java.configuration.updateBuildConfiguration": "interactive"
+}

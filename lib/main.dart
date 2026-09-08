@@ -64,9 +64,18 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (_) => AuthCubit(),
         ),
+        // BlocProvider<FavoriteActionsCubit>(
+        //   create: (_) => FavoriteActionsCubit()..initFavorites(),
+        // ),
         BlocProvider<FavoriteActionsCubit>(
-          create: (_) => FavoriteActionsCubit()..initFavorites(),
-        ),
+  create: (_) {
+    final cubit = FavoriteActionsCubit();
+    if (isLoggedIn) {
+      cubit.initFavorites();
+    }
+    return cubit;
+  },
+),
         BlocProvider<NotificationCubit>(
           create: (_) => NotificationCubit()..loadNotifications(),
         ),

@@ -165,6 +165,13 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod deintegrate
+          pod install --repo-update
+          cd ..
+
       - name: Build iOS Simulator
         run: flutter build ios --debug --simulator
 
@@ -173,4 +180,3 @@ jobs:
         with:
           name: news-app-ios-simulator
           path: build/ios/iphonesimulator/Runner.app
-

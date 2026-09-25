@@ -64,7 +64,6 @@
 #           name: news-app-apk
 #           path: build/app/outputs/flutter-apk/app-release.apk
 
-
 name: Flutter Continuous Integration (CI)
 
 on:
@@ -132,7 +131,7 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
   ios-simulator:
-    name: Build iOS Simulator
+    name: Build & Test iOS Simulator
     runs-on: macos-latest
 
     steps:
@@ -172,8 +171,88 @@ jobs:
           pod install --repo-update
           cd ..
 
+      - name: Show Available iOS Simulators
+        run: |
+          xcrun simctl list devices available
+
       - name: Build iOS Simulator
         run: flutter build ios --debug --simulator
+
+      - name: Boot iOS Simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available | \
+            grep -E 'iPhone.*\(.*\)' | \
+            head -1 | \
+            grep -oE '[0-9A-F-]{36}' | \
+            head -1)
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "No available iPhone simulator found."
+            exit 1
+          fi
+
+          echo "Using simulator: $DEVICE_ID"
+
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+      - name: Install App on iOS Simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices booted | \
+            grep -E 'iPhone.*\(Booted\)' | \
+            head -1 | \
+            grep -oE '[0-9A-F-]{36}' | \
+            head -1)
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "No booted iPhone simulator found."
+            exit 1
+          fi
+
+          echo "Installing app on simulator: $DEVICE_ID"
+
+          xcrun simctl install "$DEVICE_ID" \
+            build/ios/iphonesimulator/Runner.app
+
+      - name: Launch App on iOS Simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices booted | \
+            grep -E 'iPhone.*\(Booted\)' | \
+            head -1 | \
+            grep -oE '[0-9A-F-]{36}' | \
+            head -1)
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "No booted iPhone simulator found."
+            exit 1
+          fi
+
+          xcrun simctl launch "$DEVICE_ID" com.example.newsApp
+
+      - name: Verify App Process
+        run: |
+          sleep 10
+
+          DEVICE_ID=$(xcrun simctl list devices booted | \
+            grep -E 'iPhone.*\(Booted\)' | \
+            head -1 | \
+            grep -oE '[0-9A-F-]{36}' | \
+            head -1)
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "No booted iPhone simulator found."
+            exit 1
+          fi
+
+          echo "Checking running applications..."
+
+          xcrun simctl spawn "$DEVICE_ID" \
+            launchctl list | grep com.example.newsApp
+
+      - name: Shutdown iOS Simulator
+        if: always()
+        run: |
+          xcrun simctl shutdown all || true
 
       - name: Upload iOS Simulator Artifact
         uses: actions/upload-artifact@v4
